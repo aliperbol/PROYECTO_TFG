@@ -2,7 +2,7 @@ const msg = document.querySelector("output");
 const startBtn = document.querySelector("#start_button");
 const stopBtn = document.querySelector("#stop_button");
 const canvasElt = document.querySelector("#canvas");
-
+console.log(startBtn);
 // When the _Start_ button is clicked, set up the audio nodes, play the sound,
 // gather samples for the analysis, update the canvas.
 startBtn.addEventListener("click", (e) => {
@@ -15,7 +15,7 @@ startBtn.addEventListener("click", (e) => {
   // Load the audio the first time through, otherwise play it from the buffer
   msg.textContent = "Loading audio…";
 
-  fetch("canciones\The Strokes - Reptilia.mp3")
+  fetch("canciones/The Strokes - Reptilia.mp3")
     .then((response) => response.arrayBuffer())
     .then((downloadedBuffer) => audioContext.decodeAudioData(downloadedBuffer))
     .then((decodedBuffer) => {
@@ -49,7 +49,45 @@ startBtn.addEventListener("click", (e) => {
 
         // Get the time domain data for this sample
         analyserNode.getByteTimeDomainData(amplitudeArray);
+if (visualSetting == "frequencybars") {
+      analyser.fftSize = 256;
+      const bufferLengthAlt = analyser.frequencyBinCount;
+      console.log(bufferLengthAlt);
 
+      // See comment above for Float32Array()
+      const dataArrayAlt = new Uint8Array(bufferLengthAlt);
+
+      canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+      const drawAlt = function () {
+        drawVisual = requestAnimationFrame(drawAlt);
+
+        analyser.getByteFrequencyData(dataArrayAlt);
+
+        canvasCtx.fillStyle = "rgb(0, 0, 0)";
+        canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+        const barWidth = (WIDTH / bufferLengthAlt) * 2.5;
+        let barHeight;
+        let x = 0;
+
+        for (let i = 0; i < bufferLengthAlt; i++) {
+          barHeight = dataArrayAlt[i];
+
+          canvasCtx.fillStyle = "rgb(" + (barHeight + 100) + ",50,50)";
+          canvasCtx.fillRect(
+            x,
+            HEIGHT - barHeight / 2,
+            barWidth,
+            barHeight / 2
+          );
+
+          x += barWidth + 1;
+        }
+      };
+
+      drawAlt();
+    }
         // Draw the display when the audio is playing
         if (audioContext.state === "running") {
           // Draw the time domain in the canvas
