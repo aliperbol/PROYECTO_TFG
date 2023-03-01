@@ -1,0 +1,177 @@
+<div class="container">
+  <h1>Synthesizer</h1>
+  <div class="synth">
+    <div class="touch-move-scroll-blocker"></div>
+
+    <div class="modules">
+      <div class="module osc">
+        <div class="slider waveform">
+          <span class="label">Osc</span>
+          <input
+            type="range"
+            id="osc-shape"
+            min="0"
+            max="3"
+            step="1"
+            value="4"
+          />
+        </div>
+      </div>
+
+      <div class="module lpf">
+        <div class="slider">
+          <span class="label">Freq</span>
+          <input
+            type="range"
+            id="lpf-freq"
+            min="0"
+            max="1"
+            step=".05"
+            value=".7"
+          />
+        </div>
+
+        <div class="slider">
+          <span class="label">Resolution</span>
+          <input
+            type="range"
+            id="lpf-res"
+            min="0"
+            max="1"
+            step=".01"
+            value=".4"
+          />
+        </div>
+      </div>
+
+      <div class="module env">
+        <div class="slider">
+          <span class="label">Attack</span>
+          <input
+            type="range"
+            id="env-attack"
+            min="0.0"
+            max="3.0"
+            step=".01"
+            value="0.2"
+          />
+        </div>
+
+        <div class="slider">
+          <span class="label">Decay</span>
+          <input
+            type="range"
+            id="env-decay"
+            min="0.0"
+            max="3.0"
+            step=".01"
+            value="3.0"
+          />
+        </div>
+
+        <div class="slider">
+          <span class="label">Sustain</span>
+          <input
+            type="range"
+            id="env-sustain"
+            min="0.0"
+            max="1.0"
+            step=".01"
+            value="1.0"
+          />
+        </div>
+
+        <div class="slider">
+          <span class="label">Release</span>
+          <input
+            type="range"
+            id="env-release"
+            min="0.0"
+            max="3.0"
+            step=".01"
+            value="1.0"
+          />
+        </div>
+
+        <div class="slider">
+          <span class="label">Octave</span>
+          <input
+            type="range"
+            id="osc-octave"
+            min="0"
+            max="6"
+            step="1"
+            value="3"
+          />
+        </div>
+
+        <div class="slider">
+          <span class="label">Glide</span>
+          <input
+            type="range"
+            id="osc-portamento"
+            min="0"
+            max="1"
+            step="0.1"
+            value="1"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div id="piano-keys">
+      <!--OCTAVE 1-->
+      <!--<div class="octave1">-->
+      <div class="key" id="natural" data-note="C" data-octaveSet="0">
+        <div class="key" id="sharp" data-note="C#" data-octaveSet="0"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="D">
+        <div class="key" id="sharp" data-note="D#"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="E"></div>
+
+      <div class="key" id="natural" data-note="F">
+        <div class="key" id="sharp" data-note="F#"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="G">
+        <div class="key" id="sharp" data-note="G#"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="A">
+        <div class="key" id="sharp" data-note="A#"></div>
+      </div>
+      <div class="key" id="natural" data-note="B"></div>
+      <!--</div>-->
+
+      <!--OCTAVE 2-->
+      <!--<div class="octave2">-->
+      <div class="key" id="natural" data-note="Cb" data-octave="1">
+        <div class="key" id="sharp" data-note="C#b" data-octave="1"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="Db">
+        <div class="key" id="sharp" data-note="D#b"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="Eb"></div>
+
+      <div class="key" id="natural" data-note="Fb">
+        <div class="key" id="sharp" data-note="F#b"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="Gb">
+        <div class="key" id="sharp" data-note="G#b"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="Ab">
+        <div class="key" id="sharp" data-note="A#b"></div>
+      </div>
+
+      <div class="key" id="natural" data-note="Bb"></div>
+      <!--</div>-->
+    </div>
+  </div>
+</div>
