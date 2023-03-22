@@ -33,8 +33,8 @@
 	 padding: 20px;
 }
  .synth {
-	 width: 1010px;
-	 height: 450px;
+	 width: 1200px;
+	 height: 600px;
 	 padding: 0px;
 	 margin: 0px;
 	 background-color: #ed5565;
@@ -58,6 +58,7 @@
  .synth .modules {
 	 margin-left: 27px;
 	 margin-top: 40px;
+	 display: flex;
 }
  .synth .modules .module {
 	 float: left;
@@ -108,7 +109,8 @@
 	 width: 1000px;
 	 height: 180px;
 	 margin-left: 60px;
-	 margin-top: 275px;
+	 margin-top: 15px;
+	 bottom:0;
 }
  #piano-keys .key {
 	 display: inline-block;

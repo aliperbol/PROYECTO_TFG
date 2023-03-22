@@ -1,243 +1,117 @@
-/* Autora: Alicia Pérez Bolaños*/ 
-
+@charset "UTF-8";
+/* Autora: Alicia Pérez Bolaños*/
 :root {
-   
-    --escritorio: url('escritorio.png');
-  
-    --color-agua: hsl(207, 88%, 77%);
-    --color-coche: hsl(0, 0%, 0%);
-  
-    --color-fondo: hsl(288, 81%, 94%);
-    --color-fondo-controles:hsl(208, 100%, 97%);
-    --color-informacion1:  hsl(255, 50%, 8%);
-    --color-informacion2: hsl(253, 49%, 11%);
-    --color-claro: hsl(0, 0%, 100%);
-  
-  
-    --color-primario: hsl(0, 0%, 0%);
-    --color-secundario: hsl(2, 50%, 102%);
-    --color-resumen: hsl(212, 80%, 86%);
-    --color-sombra: hsl(0, 0%, 29%);
-    --color-boton: hsl(0, 1%, 75%);
-  
-  
-    --fuente-secundaria:'Press Start 2P', cursive;
-  }
-  
-  * {
-    margin: 0;
-    padding: 0;
-    
-  }
+  --escritorio: url("escritorio.png");
+  --color-agua: hsl(207, 88%, 77%);
+  --color-coche: hsl(0, 0%, 0%);
+  --color-fondo: hsl(288, 81%, 94%);
+  --color-fondo-controles:hsl(208, 100%, 97%);
+  --color-informacion1: hsl(255, 50%, 8%);
+  --color-informacion2: hsl(253, 49%, 11%);
+  --color-claro: hsl(0, 0%, 100%);
+  --color-primario: hsl(0, 0%, 0%);
+  --color-secundario: hsl(2, 50%, 102%);
+  --color-resumen: hsl(212, 80%, 86%);
+  --color-sombra: hsl(0, 0%, 29%);
+  --color-boton: hsl(0, 1%, 75%);
+  --fuente-secundaria:"Press Start 2P", cursive;
+}
 
-  .visualizer {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+* {
+  margin: 0;
+  padding: 0;
+}
 
-  .pantalla{
-    background: repeating-linear-gradient(to bottom, var(--color-informacion1), var(--color-informacion1) 2px, var(--color-informacion2) 2px, var(--color-informacion2) 4px);
-    /* background: repeating-linear-gradient(to bottom, var(--color-informacion1), var(--color-informacion1) 2px, var(--color-informacion2) 2px, var(--color-informacion2) 4px); */   
-    width:512;
-    height:256;
-  }
-  body,html{
-   /* background-image: var(--escritorio);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position-y: -2rem;*/
-    background-color: antiquewhite;
-    display: flex;
-    height: 100%;
-    width: 100%;
-    font-family: var(--fuente-secundaria);
-    
-  }
-  
-  .informacion{
-    flex-grow: 1;
-    padding-top: 35px;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    background: repeating-linear-gradient(to bottom, var(--color-informacion1), var(--color-informacion1) 2px, var(--color-informacion2) 2px, var(--color-informacion2) 4px);
-    
-   
-    gap: 30px;
-  }
-  
-  .info{
-    font-family: var(--fuente-secundaria);
-    color: var(--color-claro);
-    width: 100%;
-    text-align: center;
-  
-    font-size: 40px;
-    line-height: 40px;
-    letter-spacing: 5px;
-    text-shadow: -2px 0 0 hsl(61, 100%, 58%),
-      -4px 0 0 hsl(3, 71%, 57%),
-      2px 0 0 hsl(181, 98%, 78%),
-      4px 0 0 hsl(255, 98%, 50%)
-   
-  }
-  .controles{
-    justify-content: center;
-    background-color: var(--color-fondo-controles);
-    border: 3px solid var(--color-primario);
-    border-radius: 10px;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: 140px 120px 120px;
-    gap: 10px;
-    text-align: center  ;
-  }
-  .mov{
-    font-size: large;
-    text-decoration: underline;
-    grid-row: 1;
-    grid-column: 1/4;
-  }
-  .up{
-    grid-row: 2;
-    grid-column: 2;
-  }
-  .left{
-    grid-row: 3;
-    grid-column: 1;
-  }
-  .down{
-    grid-row: 3;
-    grid-column: 2;
-  }
-  .right{
-    grid-row: 3;
-    grid-column: 3;
-  }
-  .top3{
-    color: var(--color-claro);
-    display: flex;
-    flex-direction: column;
-    gap: 20px
-  }
-  .autora{
-    color: var(--color-claro);
-    
-    margin-top: 100px;
-  }
-  
-  
-  .juego {
-    flex-grow: 20;
-    justify-content: center;
-    padding-top: 15px;
-    display: grid;
-    grid-template-columns: 200px 370px;
-    grid-template-rows: 50px 50px 370px;
-    align-items: center;
-    gap: 20px;
-      
-  }
-  .panel_botones{
-    grid-row: 3;
-    grid-column: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  .boton {
+
+.pantalla {
+  background: repeating-linear-gradient(to bottom, var(--color-informacion1), var(--color-informacion1) 2px, var(--color-informacion2) 2px, var(--color-informacion2) 4px);
+  /* background: repeating-linear-gradient(to bottom, var(--color-informacion1), var(--color-informacion1) 2px, var(--color-informacion2) 2px, var(--color-informacion2) 4px); */
+  width: 512;
+  height: 256;
+}
+
+body, html {
+  /* background-image: var(--escritorio);
+   background-repeat: no-repeat;
+   background-size: cover;
+   background-position-y: -2rem;*/
+  background-color: antiquewhite;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  font-family: var(--fuente-secundaria);
+}
+
+.boton {
   background-color: var(--color-secundario);
   font-family: var(--fuente-secuendaria);
   /* Modifica el aspecto del cursor para indicar que es un botón */
   cursor: pointer;
-  border-radius:5px;
+  border-radius: 5px;
   box-shadow: 3px 3px 15px 3px var(--color-sombra);
   padding: 0.5em;
   margin: 1.5em 0.5em;
-  }
-  .boton:hover {
+}
+
+.boton:hover {
   background-color: var(--color-boton);
   /* Modifica el aspecto del cursor para indicar que es un botón */
-    
-  }
-  .boton:active {
-  background-color: var(--color-boton); 
+}
+
+.boton:active {
+  background-color: var(--color-boton);
   /* Modifica el aspecto del cursor para indicar que es un botón */
   box-shadow: 1px 1px 15px 1px var(--color-primario);
   transform: translate(3px);
-  }
-  
-  .tiempo_restante{
-    font-family: var(--fuente-secundaria);
-    background-color: azure;
-    grid-row: 1;
-    grid-column: 2;
-    
-  }
-  .resultado{
-    text-align: center;
-    font-family: var(--fuente-secundaria);
-    grid-row: 2;
-    grid-column: 2;
-  }
-  .game{
-    grid-row: 3;
-    grid-column: 2;
-  }
-  
-  
-  .grid {
-    border-radius: 10px;
-    background-image: var(--cesped);
-    background-size: 40px 40px;
-    background-repeat: repeat;
-    border: 4px solid;
-    display: flex;
-    flex-wrap: wrap;
-    height: 360px;
-    width: 360px;
-  }
-   
-  .grid div {
-    height: 40px;
-    width: 40px;
-  }
-    
-  .ending-block {
-    background-color: hsl(0, 100%, 50%);
-  }
-    
-  .starting-block {
-    background-color: hsl(240, 100%, 50%);
-  }
-    
-  .c1 {
-    background-image: var(--coche);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-color: hsl(0, 0%, 50%);
-  }
-    
-  .l1, .l2, .l3 {
-    background-image:var(--troncos);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-color: hsl(22, 56%, 38%);
-      
-  }
-    
-  .l4, .l5, .lf2, .lf3 {
-    background-color: var(--color-agua);
-  }
-    
-  .c2, .c3 {
-    background-color: hsl(0, 0%, 50%);
-  }
-    
-  .frog {
-    background-image: var(--rana);
-    background-size: contain;
-    background-repeat: no-repeat;
-  
-  }
+}
+
+.visualizer {
+  padding-right: 10mm;
+}/*# sourceMappingURL=style.css.map */
+
+.screen-display {
+  display: block;
+  width: 230px;
+  height: 40px;
+  background-color: red;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 2px;
+  background-image: linear-gradient(90deg, transparent 15%, rgba(134, 135, 129, 0.05), transparent 85%),
+      radial-gradient(rgba(92, 93, 87, 0.75), transparent 70%),
+      linear-gradient(#65675C, #727469, #6E746A);
+  background-size: 10px 100%, 200px 200px, 100% 100%;
+  background-position: 0 0, center center, 0 0;
+  background-repeat: repeat, no-repeat, no-repeat;
+  box-shadow: 0 0 2px 0 #2B262C,
+      0 0 1px 1px #221B23 inset,
+      0 0 3px #221B23 inset,
+      0 0 3px 0.5px #383838 inset,
+      0 0 5px #484848 inset,
+      9px 0 7px -4px #605A5C inset,
+      0 -2px 1px #7A7772 inset;
+      padding: 7px 12px;
+}
+
+.screen-display p {
+  font-family: "Source Code Pro", monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 10px;
+  color: #272822;
+  text-shadow: 0 0 0.5px #272822,
+      0.2px 0.2px 0.5px #4A4B45,
+      -0.2px 0.2px 0.5px #51524C,
+      0.2px -0.2px 0.5px #4A4B45,
+      0 0 0.75px #51524C,
+      0 0 1.25px #5F5F5F;
+}
+
+.screen-display p:last-child {
+  display: grid;
+  grid-template-columns: 80px 35px 85px 51px;
+}

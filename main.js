@@ -64,7 +64,7 @@ startBtn.addEventListener("click", (e) => {
             // We can use Float32Array instead of Uint8Array if we want higher precision
             // const dataArray = new Float32Array(bufferLength);
             const drawAlt = function () {
-              requestAnimationFrame(() => {
+              drawVisual = requestAnimationFrame(() => {
                 // Get the canvas 2d context
                 const canvasContext = canvas.getContext("2d");
 
@@ -86,15 +86,16 @@ startBtn.addEventListener("click", (e) => {
               startBtn.disabled = false;
               stopBtn.disabled = true;
               sourceNode.stop(0);
+              window.cancelAnimationFrame(drawVisual);
               msg.textContent = "Audio stopped.";
             });
 
             drawAlt();
           } else if (visualSetting === "frequencybars") {
-            console.log("freqiuencoias");
-            analyser.fftSize = 256;
+            //console.log("freqiuencoias");
+            analyserNode.fftSize = 256;
             const bufferLengthAlt = analyserNode.frequencyBinCount;
-            console.log(bufferLengthAlt);
+            //console.log(bufferLengthAlt);
 
             // See comment above for Float32Array()
             const dataArrayAlt = new Uint8Array(bufferLengthAlt);
@@ -104,7 +105,7 @@ startBtn.addEventListener("click", (e) => {
             const drawAlt = function () {
               drawVisual = requestAnimationFrame(drawAlt);
 
-              analyser.getByteFrequencyData(dataArrayAlt);
+              analyserNode.getByteFrequencyData(dataArrayAlt);
 
               canvasCtx.fillStyle = "rgb(0, 0, 0)";
               canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -133,6 +134,7 @@ startBtn.addEventListener("click", (e) => {
               startBtn.disabled = false;
               stopBtn.disabled = true;
               sourceNode.stop(0);
+              window.cancelAnimationFrame(drawVisual);
               msg.textContent = "Audio stopped.";
             });
             drawAlt();
@@ -148,4 +150,16 @@ startBtn.addEventListener("click", (e) => {
         visualize();
       };
     });
+
+  // Create the node that controls the volume.
+  const gainNode = new GainNode(audioContext);
+
+  const volumeControl = document.querySelector("#osc-portamento");
+  volumeControl.addEventListener(
+    "input",
+    () => {
+      gainNode.gain.value = volumeControl.value;
+    },
+    false
+  );
 });

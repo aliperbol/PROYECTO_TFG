@@ -12,26 +12,107 @@
     />
 
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="styleSynth.css" />
     <!--  -->
   </head>
 
   <body>
-    <div class="visualizer">
-      <p>Visualizador</p>
-      <canvas id="canvas" class="pantalla"></canvas>
-      <div id="controls">
-        <input type="button" id="start_button" value="Start" />
-        &nbsp; &nbsp;
-        <input type="button" id="stop_button" value="Stop" disabled />
-        <br /><br />
-        <output id="msg"></output>
-      </div>
-      <div>
-        <label for="visual">Visualizer setting</label>
-        <select id="visual" name="visual">
-          <option value="sinewave">Sinewave</option>
-          <option value="frequencybars" selected>Frequency bars</option>
-        </select>
+    <div class="container">
+      <h1>Synthesizer</h1>
+      <div class="synth">
+        <div class="visualizer">
+          <p>Visualizador</p>
+
+          <div class="screen-display">
+            <p>Song Playing</p>
+            <p>
+              <span>MEAS</span>
+              <span>120</span>
+              <span>Real</span>
+              <span>1</span>
+            </p>
+          </div>
+          <canvas id="canvas" class="pantalla"></canvas>
+          <div id="controls">
+            <input
+              type="button"
+              class="boton"
+              id="start_button"
+              value="Start"
+            />
+            &nbsp; &nbsp;
+            <input
+              type="button"
+              class="boton"
+              id="stop_button"
+              value="Stop"
+              disabled
+            />
+            <br /><br />
+            <output id="msg"></output>
+          </div>
+          <div>
+            <label for="visual">Visualizer setting</label>
+            <select id="visual" name="visual">
+              <option value="sinewave" selected>Sinewave</option>
+              <option value="frequencybars">Frequency bars</option>
+            </select>
+          </div>
+        </div>
+        <div id="piano-keys">
+          <!--OCTAVE 1-->
+          <!--<div class="octave1">-->
+          <div class="key" id="natural" data-note="C" data-octaveSet="0">
+            <div class="key" id="sharp" data-note="C#" data-octaveSet="0"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="D">
+            <div class="key" id="sharp" data-note="D#"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="E"></div>
+
+          <div class="key" id="natural" data-note="F">
+            <div class="key" id="sharp" data-note="F#"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="G">
+            <div class="key" id="sharp" data-note="G#"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="A">
+            <div class="key" id="sharp" data-note="A#"></div>
+          </div>
+          <div class="key" id="natural" data-note="B"></div>
+          <!--</div>-->
+
+          <!--OCTAVE 2-->
+          <!--<div class="octave2">-->
+          <div class="key" id="natural" data-note="Cb" data-octave="1">
+            <div class="key" id="sharp" data-note="C#b" data-octave="1"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="Db">
+            <div class="key" id="sharp" data-note="D#b"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="Eb"></div>
+
+          <div class="key" id="natural" data-note="Fb">
+            <div class="key" id="sharp" data-note="F#b"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="Gb">
+            <div class="key" id="sharp" data-note="G#b"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="Ab">
+            <div class="key" id="sharp" data-note="A#b"></div>
+          </div>
+
+          <div class="key" id="natural" data-note="Bb"></div>
+          <!--</div>-->
+        </div>
       </div>
     </div>
 
