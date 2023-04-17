@@ -1,7 +1,7 @@
 const msg = document.querySelector("output");
 const startBtn = document.querySelector("#start_button");
 const stopBtn = document.querySelector("#stop_button");
-const canvas = document.querySelector("#canvas");
+const canvasKey = document.querySelector("#canvas");
 const visualSelector = document.querySelector("#visual");
 let drawVisual;
 
@@ -16,9 +16,9 @@ startBtn.addEventListener("click", (e) => {
   // A user interaction happened we can create the audioContext
   const audioContext = new AudioContext();
 
-  const canvasCtx = canvas.getContext("2d");
+  const canvasCtx = canvasKey.getContext("2d");
   const intendedWidth = document.querySelector(".visualizer").clientWidth;
-  canvas.setAttribute("width", intendedWidth);
+  canvasKey.setAttribute("width", intendedWidth);
 
   // Load the audio the first time through, otherwise play it from the buffer
   msg.textContent = "Loading audio…";
@@ -52,9 +52,10 @@ startBtn.addEventListener("click", (e) => {
       javascriptNode.onaudioprocess = () => {
         visualize();
       };
+      const canvasContext = canvasKey.getContext("2d");
       function visualize() {
-        WIDTH = canvas.width;
-        HEIGHT = canvas.height;
+        WIDTH = canvasKey.width;
+        HEIGHT = canvasKey.height;
         const amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
         const visualSetting = visualSelector.value;
         analyserNode.getByteTimeDomainData(amplitudeArray);
@@ -66,31 +67,37 @@ startBtn.addEventListener("click", (e) => {
             const drawAlt = function () {
               drawVisual = requestAnimationFrame(() => {
                 // Get the canvas 2d context
-                const canvasContext = canvas.getContext("2d");
 
                 // Clear the canvas
-                canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+                canvasContext.clearRect(
+                  0,
+                  0,
+                  canvasKey.width,
+                  canvasKey.height
+                );
 
                 // Draw the amplitude inside the canvas
                 for (let i = 0; i < amplitudeArray.length; i++) {
                   const value = amplitudeArray[i] / 256;
-                  const y = canvas.height - canvas.height * value;
+                  const y = canvasKey.height - canvasKey.height * value;
                   canvasContext.fillStyle = "white";
                   canvasContext.fillRect(i, y, 1, 1);
                 }
               });
             };
+
+            drawAlt();
+
             // Set up the event handler to stop playing the audio
             stopBtn.addEventListener("click", (e) => {
               e.preventDefault();
+              canvasContext.clearRect(0, 0, canvasKey.width, canvasKey.height);
               startBtn.disabled = false;
               stopBtn.disabled = true;
               sourceNode.stop(0);
               window.cancelAnimationFrame(drawVisual);
               msg.textContent = "Audio stopped.";
             });
-
-            drawAlt();
           } else if (visualSetting === "frequencybars") {
             //console.log("freqiuencoias");
             analyserNode.fftSize = 256;
@@ -128,6 +135,9 @@ startBtn.addEventListener("click", (e) => {
                 x += barWidth + 1;
               }
             };
+
+            drawAlt();
+
             // Set up the event handler to stop playing the audio
             stopBtn.addEventListener("click", (e) => {
               e.preventDefault();
@@ -136,16 +146,13 @@ startBtn.addEventListener("click", (e) => {
               sourceNode.stop(0);
               window.cancelAnimationFrame(drawVisual);
               msg.textContent = "Audio stopped.";
+              refresh();
             });
-            drawAlt();
-          } else if (visualSetting == "off") {
-            canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
-            canvasCtx.fillStyle = "red";
-            canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
           }
         }
       }
       visualSelector.onchange = function () {
+        canvasContext.reset();
         window.cancelAnimationFrame(drawVisual);
         visualize();
       };
@@ -154,12 +161,12 @@ startBtn.addEventListener("click", (e) => {
   // Create the node that controls the volume.
   const gainNode = new GainNode(audioContext);
 
-  const volumeControl = document.querySelector("#osc-portamento");
-  volumeControl.addEventListener(
-    "input",
-    () => {
-      gainNode.gain.value = volumeControl.value;
-    },
-    false
-  );
+  // const volumeControl = document.querySelector("#osc-portamento");
+  // volumeControl.addEventListener(
+  //   "input",
+  //   () => {
+  //     gainNode.gain.value = volumeControl.value;
+  //   },
+  //   false
+  // );
 });

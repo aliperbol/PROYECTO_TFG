@@ -1,36 +1,54 @@
 //En este caso voy a dejar solo un color, quizas el clarito para no meter cosas innecesarias
 //import Soundfont from "https://cdn.skypack.dev/soundfont-player";
 
-const COLORMODES = [
-  { bgcolor: "#171e27", color: "#909eb4" },
-  { bgcolor: "#c0beaf", color: "#4d1210" },
-  { bgcolor: "#c02628", color: "#e17d75" },
-  { bgcolor: "#becedd", color: "#6b799e" },
-];
-
-const colorsButtons = document.querySelectorAll(".colorButtons button");
-colorsButtons.forEach((button, index) => {
-  button.style.setProperty("--casio-bgcolor", COLORMODES[index].bgcolor);
-  button.style.setProperty("--casio-color", COLORMODES[index].color);
-  button.addEventListener("click", () => {
-    document.body.style.setProperty(
-      "--casio-bgcolor",
-      COLORMODES[index].bgcolor
-    );
-    document.body.style.setProperty("--casio-color", COLORMODES[index].color);
-  });
-});
-
 //Ahora voy a probar a ponerle a las notas el sonido a ver si me sale
 //Importando esto podemos obtener el sonido de distintos instrumentos
 
+//Selectores
+const pedal = document.querySelector("#pedal");
+const power = document.querySelector("#power");
+const volumeSlider = document.querySelector("#volume-slider");
+
+let volumenActual = 0.5;
+volumeSlider.addEventListener("input", () => {
+  volumenActual = volumeSlider.value;
+});
+
+pedal.addEventListener("click", () => {
+  if (pedal.classList.contains("selected")) {
+    pedal.classList.remove("selected");
+    pedal.style.boxShadow = "1px 1px 2px #0006, 1px 0 0 #fff5 inset";
+    // button is already selected
+  } else {
+    // button is not selected yet
+    pedal.style.boxShadow = "0 0 3px #0005 inset";
+    pedal.classList.add("selected");
+  }
+});
+
+power.addEventListener("click", () => {
+  if (power.classList.contains("selected")) {
+    power.classList.remove("selected");
+
+    power.style.background = "#fdafaf";
+    power.style.boxShadow = "none";
+
+    // button is already selected
+  } else {
+    // button is not selected yet
+
+    power.style.background = "#f90606";
+    power.style.boxShadow = "0 0 20px #ff0000";
+
+    power.classList.add("selected");
+  }
+});
+
 const playingNotes = {};
-let currentInstrument = "piano";
-let currentVolume = 1;
 const teclas = document.querySelectorAll(".key");
-console.log(teclas);
+
 teclas.forEach((tecla) =>
-  tecla.addEventListener("click", (e) => pulsarTecla(e.target))
+  tecla.addEventListener("mousedown", (e) => pulsarTecla(e.target))
 );
 
 //funcion que hace el sonido al pulsar la tecla
@@ -69,43 +87,42 @@ function pulsarTecla(tecla) {
 
   const nota = tecla.getAttribute("data-note");
   const frecuencia = mapaFrecuencias[nota];
-
-  ___generaSonido(frecuencia);
+  if (power.classList.contains("selected")) ___generaSonido(frecuencia, tecla);
 }
 
-const instruments = {
-  piano: "acoustic_grand_piano",
-  fantasy: "lead_2_sawtooth",
-  violin: "violin",
-  flute: "flute",
-};
-
-// for (const pair of Object.entries(instruments)) {
-//   const [key, value] = pair;
-//   Soundfont.instrument(ac, value, options).then((data) => {
-//     instruments[key] = data;
-//   });
-// }
-
-function ___generaSonido(frecuencia) {
+function ___generaSonido(frecuencia, tecla) {
   var ac = new AudioContext();
   var now = ac.currentTime;
+
   //creamos un nodo para controlar el volumen
   const gainNode = ac.createGain();
-  gainNode.gain.value = 1;
 
   const filterNode = ac.createBiquadFilter();
   filterNode.type = "lowpass";
   filterNode.frequency.value = 1000;
+  const oscType = document.querySelector(
+    'input[name="osc_type"]:checked'
+  ).value;
 
   const pianoOscillator = ac.createOscillator();
-  pianoOscillator.type = "sine";
+  pianoOscillator.type = oscType;
   pianoOscillator.frequency.value = frecuencia;
-  pianoOscillator.start(now);
   pianoOscillator.connect(gainNode);
+  pianoOscillator.start(now);
   gainNode.connect(ac.destination);
 
-  gainNode.gain.setValueAtTime(1, now);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1);
-  pianoOscillator.stop(now + 1);
+  gainNode.gain.setValueAtTime(volumenActual, now);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, now + 3);
+  pianoOscillator.stop(now + 4);
+
+  tecla.addEventListener("mouseleave", () => {
+    if (!pedal.classList.contains("selected")) {
+      pianoOscillator.stop(now + 0.2);
+    }
+  });
+  tecla.addEventListener("mouseup", () => {
+    if (!pedal.classList.contains("selected")) {
+      pianoOscillator.stop(now + 0.2);
+    }
+  });
 }
