@@ -8,7 +8,19 @@
 const pedal = document.querySelector("#pedal");
 const power = document.querySelector("#power");
 const volumeSlider = document.querySelector("#volume-slider");
+const freqLowPassSlider = document.querySelector("#lowpass-slider");
+const freqHighPassSlider = document.querySelector("#highpass-slider");
 
+let freqLow = 350;
+let freqHigh = 350;
+
+freqHighPassSlider.addEventListener("input", () => {
+  freqHigh = freqHighPassSlider.value;
+});
+
+freqLowPassSlider.addEventListener("input", () => {
+  freqLow = freqLowPassSlider.value;
+});
 let volumenActual = 0.5;
 volumeSlider.addEventListener("input", () => {
   volumenActual = volumeSlider.value;
@@ -84,7 +96,6 @@ function pulsarTecla(tecla) {
     Asos5: 932.328,
     B5: 987.767,
   };
-
   const nota = tecla.getAttribute("data-note");
   const frecuencia = mapaFrecuencias[nota];
   if (power.classList.contains("selected")) ___generaSonido(frecuencia, tecla);
@@ -107,9 +118,21 @@ function ___generaSonido(frecuencia, tecla) {
   const pianoOscillator = ac.createOscillator();
   pianoOscillator.type = oscType;
   pianoOscillator.frequency.value = frecuencia;
+  //lowpass filter
+  const filterLow = ac.createBiquadFilter();
+  console.log(freqLow);
+  filterLow.frequency.value = freqLow;
+
+  //highpass filter
+  // const filterHigh = ac.createBiquadFilter();
+  // pianoOscillator.connect(filterHigh);
+  // filterHigh.connect(ac.destination);
+  // filterHigh.frequency = freqHigh;
+
   pianoOscillator.connect(gainNode);
+  gainNode.connect(filterLow);
+  filterLow.connect(ac.destination);
   pianoOscillator.start(now);
-  gainNode.connect(ac.destination);
 
   gainNode.gain.setValueAtTime(volumenActual, now);
   gainNode.gain.exponentialRampToValueAtTime(0.001, now + 3);

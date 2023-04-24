@@ -10,12 +10,18 @@
 	 --greyLight-2: #c8d0e7;
 	 --greyLight-3: #bec8e4;
 	 --greyDark: #9baacf;
+   --sliderVertical: url('imagenes/sliderVertical.png');
+   --sliderHorizontal: url('imagenes/sliderHorizontal.png');
+   --algoContigo: url('imagenes/algo-contigo.jpg');
+   --aw: url('imagenes/aw.jpg');
+   --gettingOlder: url('imagenes/getting-older.jpg');
+   --theStrokes: url('imagenes/theStrokes.png');
+   --waltz: url('imagenes/waltz.jpg');
+   --cupid: url('imagenes/cupid.jpg');
+
+
   }
   
-  
-
-
-
 
   .container {
     display: flex;
@@ -124,28 +130,7 @@
                 transform: translate(-28px, -2px);
               }
   
-  .casio-pt1 .casio-right .casio-controls .controls-label .group.buttons .options {
-                display: flex;
-                align-items: flex-end;
-              }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-label .group.buttons span:not(.fill)::after {
-                content: "▪";
-                display: block;
-              }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-label .group.buttons .fill {
-                margin: 0 2px;
-                display: flex;
-                justify-content: center;
-                width: 5px;
-                text-align: center;
-              }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-label .group.buttons .arrow {
-                width: 4px;
-                margin: 0 6px;
-              }
+
   
   .casio-pt1 .casio-right .casio-controls .controls-label .group .box {
               display: inline-block;
@@ -155,19 +140,7 @@
               font-size: 10px;
               margin: 4px;
             }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-label .group .box.last {
-                margin-left: 2em;
-              }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-label .group .fill {
-              background: var(--casio-color);
-              color: var(--casio-bgcolor);
-            }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-label .group .options {
-              display: flex;
-            }
+
   
   .casio-pt1 .casio-right .casio-controls .controls-label .group .options > span {
                 display: inline-block;
@@ -176,10 +149,7 @@
                 text-align: center;
               }
   
-  .casio-pt1 .casio-right .casio-controls .controls-label .group .options > span.inline {
-                  max-width: none;
-                  width: 42px;
-                }
+
   
   .casio-pt1 .casio-right .casio-controls .controls-label .group .options .volume {
                 -webkit-clip-path: polygon(0 50%, 100% 15%, 100% 85%, 0 50%);
@@ -188,11 +158,11 @@
 
               .slider {
                 appearance: none;
-                width: 20%;
+                width: 12%;
                 height: 5px;
                 background: #ddd;
                 outline: none;
-                opacity: 0.6;
+                border-radius: 5px;
                 -webkit-transition: .2s;
                 transition: opacity .2s;
               }
@@ -200,26 +170,27 @@
               .slider::-webkit-slider-thumb {
                 -webkit-appearance: none;
                 appearance: none;
-                width: 10px;
-                height: 10px;
-                background: #44517a;
+                width: 1.1em;
+                height: 0.75em;
+                background: var(--sliderHorizontal) no-repeat;
+                background-size: cover;
                 cursor: pointer;
               }
               
               .slider::-moz-range-thumb {
-                width: 10px;
-                height: 10px;
-                background: #44517a;
+                width: 1em;
+                height: 0.75rem;
+                background: var(--sliderHorizontal) no-repeat;
+                background-size: cover;
                 cursor: pointer;
               }
-  
 
+              .lowpass{
+                transform: rotate(-90deg); /* rotate vertically */
+                width: 8%;
+                
+              }
   
-  .casio-pt1 .casio-right .casio-controls .controls-label > :nth-child(4) .options > span { width: 20px; }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-label > :nth-child(4) .options > span:nth-child(n+7) {
-              transform: translateX(-3px);
-            }
   
   .casio-pt1 .casio-right .casio-controls .controls-buttons {
           width: 100%;
@@ -272,59 +243,6 @@
             }
   
   .casio-pt1 .casio-right .casio-controls .controls-buttons .grid .steelblue { background: #44517a; }
-  
-  
-  .casio-pt1 .casio-right .casio-controls .controls-buttons .grid .slider {
-              display: flex;
-              align-items: center;
-              height: 10px;
-              border: 1px solid #0004;
-              border-bottom-color: #fff7;
-              border-right-color: #fff7;
-              box-shadow: 2px 2px 2px #0003 inset;
-            }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-buttons .grid .slider input {
-                display: none;
-              }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-buttons .grid .slider input + label {
-                display: block;
-                width: 12px;
-                height: 8px;
-                background: #000;
-              }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-buttons .grid .slider input:checked + label {
-                height: 16px;
-                background: transparent;
-                display: flex;
-                position: relative;
-              }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-buttons .grid .slider input:checked + label::before,
-                .casio-pt1 .casio-right .casio-controls .controls-buttons .grid .slider input:checked + label::after {
-                  content: "";
-                  display: block;
-                  background: #444;
-                  width: 5px;
-                  border-radius: 1px;
-                  border-right: 1px solid #222;
-                  height: 16px;
-                  position: absolute;
-                }
-  
-
-  .casio-pt1 .casio-right .keys-container .name-keys .key-name:nth-child(9)::before {
-                width: 200%;
-                position: absolute;
-                left: -50%;
-              }
-  
-  .casio-pt1 .casio-right .keys-container .name-keys .key-name:nth-child(9)::after {
-                margin-top: 10px;
-              }
-
   
   .casio-pt1 .casio-right .keys-container .keys {
           min-height: 135px;
@@ -419,7 +337,7 @@
   
   .casio-pt1 .casio-right .keys-container .note-keys {
           width: 100%;
-         
+          
           display: flex;
           font-size: 8px;
           justify-content: space-around;
@@ -428,7 +346,8 @@
           border-right: 1px solid #fff2;
           border-top: 1px solid #0007;
           position: relative;
-          
+          top: -2px;
+          left: -1px;
           padding: 0 1px;
           
         }
@@ -492,6 +411,103 @@
   
 
   
+.songSelector {
+  padding-top: 20px;
+  margin: auto;
+  width: 150px;
+  height: 100px;
+  position: relative;
+  perspective: 1000px;
+}
+
+.carousel {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: transform 1s;
+}
+.carousel div {
+  transform-style: preserve-3d;
+  
+}
+
+.item {
+  display: block;
+  position: absolute;
+  background: #000;
+  width: 150px;
+  height: 100px;
+  text-align: center;
+  color: #FFF;
+  opacity: 0.98;
+  border-radius: 10px;
+  transition: transform 1s;
+  cursor:pointer;
+}
+
+.cancion1 {
+  transform: rotateY(0deg) translateZ(150px);
+}
+.cancion1 .item {
+  background: var(--theStrokes) no-repeat;
+  background-size: cover;
+}
+.cancion2 {
+  transform: rotateY(60deg) translateZ(150px) rotateY(-60deg);
+}
+.cancion2 .item {
+  background: var(--algoContigo) no-repeat;
+  background-size: cover;
+}
+.cancion3 {
+  transform: rotateY(120deg) translateZ(150px)  rotateY(-120deg);
+}
+.cancion3 .item {
+  background: var(--aw) no-repeat;
+  background-size: cover;
+}
+.cancion4 {
+  transform: rotateY(180deg) translateZ(150px) rotateY(-180deg);
+}
+.cancion4 .item {
+  background: var(--waltz) no-repeat;
+  background-size: cover;
+}
+.cancion5 {
+  transform: rotateY(240deg) translateZ(150px) rotateY(-240deg);
+} 
+.cancion5 .item {
+  background: var(--gettingOlder) no-repeat;
+  background-size: cover;
+}
+.cancion6 {
+  transform: rotateY(300deg) translateZ(150px) rotateY(-300deg);
+} 
+.cancion6 .item {
+  background: var(--cupid) no-repeat;
+  background-size: cover;
+}
+
+.next, .prev {
+  color: #444;
+  position: absolute;
+  top: 80px;
+  padding: 1em 2em;
+  cursor: pointer;
+  background: #CCC;
+  border-radius: 5px;
+  border-top: 1px solid #FFF;
+  box-shadow: 0 5px 0 #999;
+  transition: box-shadow 0.1s, top 0.1s;
+}
+.next:hover, .prev:hover { color: #000; }
+.next:active, .prev:active {
+  top: 104px;
+  box-shadow: 0 1px 0 #999;
+}
+.next { right: 5em; }
+.prev { left: 5em; }
   
   
   

@@ -10,7 +10,28 @@
     <!--  -->
   </head>
   <body>
-    <div class="colorButtons"></div>
+    <div class="songSelector">
+      <div class="carousel">
+        <div class="cancion1">
+          <div class="item selected" id="1" cancion="cancion1"></div>
+        </div>
+        <div class="cancion2">
+          <div class="item" id="2" cancion="cancion2"></div>
+        </div>
+        <div class="cancion3">
+          <div class="item" id="3" cancion="cancion3"></div>
+        </div>
+        <div class="cancion4">
+          <div class="item" id="4" cancion="cancion4"></div>
+        </div>
+        <div class="cancion5">
+          <div class="item" id="5" cancion="cancion5"></div>
+        </div>
+        <div class="cancion6">
+          <div class="item" id="6" cancion="cancion6"></div>
+        </div>
+      </div>
+    </div>
 
     <div class="container">
       <div class="casio-pt1">
@@ -65,6 +86,27 @@
                   <span>max</span>
                 </div>
               </div>
+              <div class="group">
+                <span>Pedal </span>
+              </div>
+
+              <input
+                type="range"
+                class="lowpass slider"
+                id="lowpass-slider"
+                min="0"
+                max="8000"
+                value="350"
+              />
+
+              <input
+                type="range"
+                class="lowpass slider"
+                id="highpass-slider"
+                min="0"
+                max="8000"
+                value="350"
+              />
               <div class="segmented-control">
                 <input
                   type="radio"
@@ -113,7 +155,7 @@
                   max="1"
                   step="0.01"
                   value="0.5"
-                  class="volume slider"
+                  class="slider"
                   id="volume-slider"
                 />
 
