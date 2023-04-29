@@ -10,239 +10,270 @@
     <!--  -->
   </head>
   <body>
-    <div class="songSelector">
-      <div class="carousel">
-        <div class="cancion1">
-          <div class="item selected" id="1" cancion="cancion1"></div>
-        </div>
-        <div class="cancion2">
-          <div class="item" id="2" cancion="cancion2"></div>
-        </div>
-        <div class="cancion3">
-          <div class="item" id="3" cancion="cancion3"></div>
-        </div>
-        <div class="cancion4">
-          <div class="item" id="4" cancion="cancion4"></div>
-        </div>
-        <div class="cancion5">
-          <div class="item" id="5" cancion="cancion5"></div>
-        </div>
-        <div class="cancion6">
-          <div class="item" id="6" cancion="cancion6"></div>
-        </div>
-      </div>
-    </div>
-
     <div class="container">
       <div class="casio-pt1">
         <div class="casio-left">
-          <div class="speaker-container">
-            <div class="speaker"></div>
-          </div>
-          <div class="speaker-bottom">
-            <div class="power">
-              <button id="power"></button>
-              <span>power</span>
+          <div>
+          <div class="songSelector">
+            <div class="carousel">
+              <div class="cancion1">
+                <div class="item selected" id="1" cancion="cancion1"></div>
+              </div>
+              <div class="cancion2">
+                <div class="item" id="2" cancion="cancion2"></div>
+              </div>
+              <div class="cancion3">
+                <div class="item" id="3" cancion="cancion3"></div>
+              </div>
+              <div class="cancion4">
+                <div class="item" id="4" cancion="cancion4"></div>
+              </div>
+              <div class="cancion5">
+                <div class="item" id="5" cancion="cancion5"></div>
+              </div>
+              <div class="cancion6">
+                <div class="item" id="6" cancion="cancion6"></div>
+              </div>
             </div>
-            <div class="logo"></div>
+            
           </div>
-        </div>
-        <div class="casio-right">
-          <div class="visualizer">
-            <canvas id="canvas" class="pantalla"></canvas>
-            <div id="controls">
-              <input
-                type="button"
-                class="boton"
-                id="start_button"
-                value="Start"
-              />
-              &nbsp; &nbsp;
-              <input
-                type="button"
-                class="boton"
-                id="stop_button"
-                value="Stop"
-                disabled
-              />
-              <br /><br />
-              <output id="msg"></output>
-            </div>
-            <div>
-              <label for="visual">Visualizer setting</label>
-              <select id="visual" name="visual">
-                <option value="sinewave" selected>Sinewave</option>
-                <option value="frequencybars">Frequency bars</option>
-              </select>
-            </div>
-          </div>
-          <div class="casio-controls">
-            <div class="controls-label">
-              <div class="group">
-                <div class="box">volume</div>
-                <div class="options">
-                  <span>min</span>
-                  <span class="volume">||||||</span>
-                  <span>max</span>
+          <div class="music-player">
+              <input type = "range" value ="0" min="0" max="100" step="1"
+                id="music-player-timeframe"
+                class="music-player-timeframe"
+              ></input>
+              <div style="width: 100%; text-align: center">
+                <i class="fas fa-backward" onclick="rotate('backward')"></i>
+                <i
+                  class="fas fa-play"
+                  id="play-pause-button"
+                  onclick="playPause()"
+                ></i>
+                <i class="fas fa-forward" onclick="rotate('forward')"></i>
+              </div>
+              <div style="margin-bottom: 15px">
+                <div style="float: right">
+                  <div id="volume" class="volume-control"></div>
                 </div>
               </div>
-              <div class="group">
-                <span>Pedal </span>
-              </div>
-
-              <input
-                type="range"
-                class="lowpass slider"
-                id="lowpass-slider"
-                min="0"
-                max="8000"
-                value="350"
-              />
-
-              <input
-                type="range"
-                class="lowpass slider"
-                id="highpass-slider"
-                min="0"
-                max="8000"
-                value="350"
-              />
-              <div class="segmented-control">
-                <input
-                  type="radio"
-                  name="osc_type"
-                  value="sine"
-                  id="tab-1"
-                  checked
-                />
-                <label for="tab-1" class="segmented-control__1">
-                  <p>Sine</p></label
-                >
-
-                <input type="radio" name="osc_type" value="square" id="tab-2" />
-                <label for="tab-2" class="segmented-control__2">
-                  <p>Square</p></label
-                >
-
-                <input
-                  type="radio"
-                  name="osc_type"
-                  value="sawtooth"
-                  id="tab-3"
-                />
-                <label for="tab-3" class="segmented-control__3">
-                  <p>Sawtooth</p></label
-                >
-                <input
-                  type="radio"
-                  name="osc_type"
-                  value="triangle"
-                  id="tab-4"
-                />
-                <label for="tab-4" class="segmented-control__3">
-                  <p>Triangle</p></label
-                >
-
-                <div class="segmented-control__color"></div>
+            </div>
+            </div>
+            <div class="speaker-container">
+              <div class="speaker"></div>
+            </div>
+            <div class="speaker-bottom">
+              <div class="power">
+                <button id="power"></button>
+                <span>power</span>
               </div>
             </div>
+          </div>
+          <div class="casio-right">
+            <div class="visualizer">
+              <canvas id="canvas" class="pantalla"></canvas>
+              <div id="controls">
+                <input
+                  type="button"
+                  class="boton"
+                  id="start_button"
+                  value="Start"
+                />
+                &nbsp; &nbsp;
+                <input
+                  type="button"
+                  class="boton"
+                  id="stop_button"
+                  value="Stop"
+                  disabled
+                />
+                <br /><br />
+                <output id="msg"></output>
+              </div>
+              <div>
+                <label for="visual">Visualizer setting</label>
+                <select id="visual" name="visual">
+                  <option value="sinewave" selected>Sinewave</option>
+                  <option value="frequencybars">Frequency bars</option>
+                </select>
+              </div>
+            </div>
+            <div class="casio-controls">
+              <div class="controls-label">
+                <div class="group">
+                  <div class="box">volume</div>
+                  <div class="options">
+                    <span>min</span>
+                    <span class="volume">||||||</span>
+                    <span>max</span>
+                  </div>
+                </div>
+                <div class="group">
+                  <span>Pedal </span>
+                </div>
 
-            <div class="controls-buttons">
-              <div class="grid">
                 <input
                   type="range"
+                  class="lowpass slider"
+                  id="lowpass-slider"
                   min="0"
-                  max="1"
-                  step="0.01"
-                  value="0.5"
-                  class="slider"
-                  id="volume-slider"
+                  max="8000"
+                  value="350"
                 />
 
-                <div class="end group">
-                  <div id="pedal" class="big button steelblue"></div>
+                <input
+                  type="range"
+                  class="lowpass slider"
+                  id="highpass-slider"
+                  min="0"
+                  max="8000"
+                  value="350"
+                />
+                <div class="segmented-control">
+                  <input
+                    type="radio"
+                    name="osc_type"
+                    value="sine"
+                    id="tab-1"
+                    checked
+                  />
+                  <label for="tab-1" class="segmented-control__1">
+                    <p>Sine</p></label
+                  >
+
+                  <input
+                    type="radio"
+                    name="osc_type"
+                    value="square"
+                    id="tab-2"
+                  />
+                  <label for="tab-2" class="segmented-control__2">
+                    <p>Square</p></label
+                  >
+
+                  <input
+                    type="radio"
+                    name="osc_type"
+                    value="sawtooth"
+                    id="tab-3"
+                  />
+                  <label for="tab-3" class="segmented-control__3">
+                    <p>Sawtooth</p></label
+                  >
+                  <input
+                    type="radio"
+                    name="osc_type"
+                    value="triangle"
+                    id="tab-4"
+                  />
+                  <label for="tab-4" class="segmented-control__3">
+                    <p>Triangle</p></label
+                  >
+
+                  <div class="segmented-control__color"></div>
+                </div>
+              </div>
+
+              <div class="controls-buttons">
+                <div class="grid">
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.5"
+                    class="slider"
+                    id="volume-slider"
+                  />
+
+                  <div class="end group">
+                    <div id="pedal" class="big button steelblue"></div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="keys-container">
-            <div class="name-keys">
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-              <div class="key-name"></div>
-            </div>
-            <div class="keys">
-              <div class="black-keys">
-                <div class="black key" data-note="Gsos3"></div>
-                <div class="black key" data-note="Asos3"></div>
-                <div class="black key" data-note="Csos4"></div>
-                <div class="black key" data-note="Dsos4"></div>
-                <div class="black key" data-note="Fsos4"></div>
-                <div class="black key" data-note="Gsos4"></div>
-                <div class="black key" data-note="Asos4"></div>
-                <div class="black key" data-note="Csos5"></div>
-                <div class="black key" data-note="Dsos5"></div>
-                <div class="black key" data-note="Fsos5"></div>
-                <div class="black key" data-note="Gsos5"></div>
-                <div class="black key" data-note="Asos5"></div>
+            <div class="keys-container">
+              <div class="name-keys">
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
+                <div class="key-name"></div>
               </div>
-              <div class="white-keys">
-                <div class="white key" data-note="G3"></div>
-                <div class="white key" data-note="A3"></div>
-                <div class="white key" data-note="B3"></div>
-                <div class="white key" data-note="C4"></div>
-                <div class="white key" data-note="D4"></div>
-                <div class="white key" data-note="E4"></div>
-                <div class="white key" data-note="F4"></div>
-                <div class="white key" data-note="G4"></div>
-                <div class="white key" data-note="A4"></div>
-                <div class="white key" data-note="B4"></div>
-                <div class="white key" data-note="C5"></div>
-                <div class="white key" data-note="D5"></div>
-                <div class="white key" data-note="E5"></div>
-                <div class="white key" data-note="F5"></div>
-                <div class="white key" data-note="G5"></div>
-                <div class="white key" data-note="A5"></div>
-                <div class="white key" data-note="B5"></div>
+              <div class="keys">
+                <div class="black-keys">
+                  <div class="black key" data-note="Gsos3"></div>
+                  <div class="black key" data-note="Asos3"></div>
+                  <div class="black key" data-note="Csos4"></div>
+                  <div class="black key" data-note="Dsos4"></div>
+                  <div class="black key" data-note="Fsos4"></div>
+                  <div class="black key" data-note="Gsos4"></div>
+                  <div class="black key" data-note="Asos4"></div>
+                  <div class="black key" data-note="Csos5"></div>
+                  <div class="black key" data-note="Dsos5"></div>
+                  <div class="black key" data-note="Fsos5"></div>
+                  <div class="black key" data-note="Gsos5"></div>
+                  <div class="black key" data-note="Asos5"></div>
+                </div>
+                <div class="white-keys">
+                  <div class="white key" data-note="G3"></div>
+                  <div class="white key" data-note="A3"></div>
+                  <div class="white key" data-note="B3"></div>
+                  <div class="white key" data-note="C4"></div>
+                  <div class="white key" data-note="D4"></div>
+                  <div class="white key" data-note="E4"></div>
+                  <div class="white key" data-note="F4"></div>
+                  <div class="white key" data-note="G4"></div>
+                  <div class="white key" data-note="A4"></div>
+                  <div class="white key" data-note="B4"></div>
+                  <div class="white key" data-note="C5"></div>
+                  <div class="white key" data-note="D5"></div>
+                  <div class="white key" data-note="E5"></div>
+                  <div class="white key" data-note="F5"></div>
+                  <div class="white key" data-note="G5"></div>
+                  <div class="white key" data-note="A5"></div>
+                  <div class="white key" data-note="B5"></div>
+                </div>
               </div>
-            </div>
-            <div class="note-keys">
-              <div class="note">G</div>
-              <div class="note">A</div>
-              <div class="note">B</div>
-              <div class="note">C</div>
-              <div class="note">D</div>
-              <div class="note">E</div>
-              <div class="note">F</div>
-              <div class="note">G</div>
-              <div class="note">A</div>
-              <div class="note">B</div>
-              <div class="note">C</div>
-              <div class="note">D</div>
-              <div class="note">E</div>
-              <div class="note">F</div>
-              <div class="note">G</div>
-              <div class="note">A</div>
-              <div class="note">B</div>
+              <div class="note-keys">
+                <div class="note">G</div>
+                <div class="note">A</div>
+                <div class="note">B</div>
+                <div class="note">C</div>
+                <div class="note">D</div>
+                <div class="note">E</div>
+                <div class="note">F</div>
+                <div class="note">G</div>
+                <div class="note">A</div>
+                <div class="note">B</div>
+                <div class="note">C</div>
+                <div class="note">D</div>
+                <div class="note">E</div>
+                <div class="note">F</div>
+                <div class="note">G</div>
+                <div class="note">A</div>
+                <div class="note">B</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <script
+      src="https://kit.fontawesome.com/e6647c162b.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="mainPiano.js"></script>
     <script src="visualizer.js"></script>
   </body>

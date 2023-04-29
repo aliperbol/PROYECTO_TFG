@@ -3,7 +3,8 @@ const startBtn = document.querySelector("#start_button");
 const stopBtn = document.querySelector("#stop_button");
 const canvasKey = document.querySelector("#canvas");
 const visualSelector = document.querySelector("#visual");
-let drawVisual;
+var play_pause_button = document.getElementById("play-pause-button");
+var song_length_in_seconds = 0;
 const cancion1 = "canciones/The Strokes - Reptilia.mp3";
 const cancion2 = "canciones/Algo contigo.mp3";
 const cancion3 = "canciones/Lana Del Rey - AW (Audio).mp3";
@@ -14,17 +15,27 @@ const cancion6 =
   "canciones/FIFTY FIFTY (피프티피프티) - Cupid (TwinVer.) Official Lyric Video.mp3";
 let canciones = [cancion1, cancion2, cancion3, cancion4, cancion5, cancion6];
 let cancion = canciones[0];
+let i = 0;
 var audioCtx = new AudioContext();
 const canvasCtx = canvasKey.getContext("2d");
 const intendedWidth = document.querySelector(".visualizer").clientWidth;
 canvasKey.setAttribute("width", intendedWidth);
 let source;
+function playPause() {
+  if (play_pause_button.classList.contains("fa-stop")) {
+    play_pause_button.classList.replace("fa-stop", "fa-play");
+    source.stop();
+  } else if (play_pause_button.classList.contains("fa-play")) {
+    play_pause_button.classList.replace("fa-play", "fa-stop");
+    playSong();
+  }
+}
 function playSong() {
   // load audio file
   msg.textContent = "Loading audio…";
   var request = new XMLHttpRequest();
-  console.log(cancion);
-  request.open("GET", cancion, true);
+
+  request.open("GET", canciones[i], true);
   request.responseType = "arraybuffer";
 
   request.onload = function () {
@@ -32,14 +43,22 @@ function playSong() {
       // create audio source
       source = new AudioBufferSourceNode(audioCtx, {
         buffer: buffer,
-        loop: true,
+        loop: false,
       });
-
+      const startTime = audioCtx.currentTime;
       source.connect(audioCtx.destination);
 
       // play audio
       source.start(0);
       msg.textContent = "Playing audio...";
+      const sliderCurrentTime = document.getElementById(
+        "music-player-timeframe"
+      );
+      setInterval(() => {
+        const elapsedTime = audioCtx.currentTime - startTime;
+
+        sliderCurrentTime.value = elapsedTime;
+      }, 100);
       visualize(source);
     });
   };
@@ -69,18 +88,17 @@ stopBtn.addEventListener("click", (e) => {
   window.cancelAnimationFrame(drawVisual);
   msg.textContent = "Audio stopped.";
 });
+const analyserNode = audioCtx.createAnalyser();
+analyserNode.fftSize = 2048;
+const bufferLength = analyserNode.frequencyBinCount;
+WIDTH = canvasKey.width;
+HEIGHT = canvasKey.height;
+const amplitudeArray = new Uint8Array(bufferLength);
 
 function visualize(source) {
-  const analyserNode = audioCtx.createAnalyser();
-  analyserNode.fftSize = 2048;
-  const bufferLength = analyserNode.frequencyBinCount;
-  WIDTH = canvasKey.width;
-  HEIGHT = canvasKey.height;
-  const amplitudeArray = new Uint8Array(bufferLength);
-  const visualSetting = visualSelector.value;
-
   source.connect(analyserNode);
   analyserNode.connect(audioCtx.destination);
+  const visualSetting = visualSelector.value;
 
   if (audioCtx.state === "running") {
     if (visualSetting === "sinewave") {
@@ -112,25 +130,7 @@ function visualize(source) {
       function draw() {
         analyserNode.getByteFrequencyData(dataArrayAlt);
         analyserNode.getFloatFrequencyData(frequencyArray);
-        // canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // // Set the canvas styles
-        // canvasCtx.fillStyle = "#fff";
-        // canvasCtx.strokeStyle = "#fff";
-        // canvasCtx.lineWidth = 4;
-
-        // // Calculate the bar width and spacing
-        // const barWidth = (WIDTH / bufferLength) * 2.5;
-        // const barSpacing = barWidth / 5;
-
-        // // Draw the frequency bars
-        // let x = 0;
-        // for (let i = 0; i < bufferLength; i++) {
-        //   const barHeight = HEIGHT * (dataArrayAlt[i] / 255);
-        //   canvasCtx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
-        //   canvasCtx.strokeRect(x, HEIGHT - barHeight, barWidth, barHeight);
-        //   x += barWidth + barSpacing;
-        // }
         canvasCtx.fillStyle = "rgb(0, 0, 0)";
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -155,32 +155,6 @@ function visualize(source) {
         // Call the draw function again
         requestAnimationFrame(draw);
       }
-      // const drawAlt = function () {
-      //   drawVisual = requestAnimationFrame(drawAlt);
-
-      //   analyserNode.getByteFrequencyData(dataArrayAlt);
-
-      //   canvasCtx.fillStyle = "rgb(0, 0, 0)";
-      //   canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-
-      //   const barWidth = (WIDTH / bufferLengthAlt) * 2.5;
-      //   let barHeight;
-      //   let x = 0;
-
-      //   for (let i = 0; i < bufferLengthAlt; i++) {
-      //     barHeight = dataArrayAlt[i];
-
-      //     canvasCtx.fillStyle = "rgb(" + (barHeight + 100) + ",50,50)";
-      //     canvasCtx.fillRect(
-      //       x,
-      //       HEIGHT - barHeight / 2,
-      //       barWidth,
-      //       barHeight / 2
-      //     );
-
-      //     x += barWidth + 1;
-      //   }
-      // };
 
       draw();
     }
@@ -189,25 +163,34 @@ function visualize(source) {
 visualSelector.onchange = function () {
   canvasCtx.reset();
 
-  visualize();
+  visualize(source);
 };
 
 const carousel = document.querySelector(".carousel");
 const items = document.querySelectorAll(".item");
-const next = document.querySelector(".next");
-const prev = document.querySelector(".prev");
 
 var currdeg = 0;
 
 let selected = document.querySelector(".selected");
 items.forEach((item) => {
   item.addEventListener("click", () => {
-    if (selected.id < item.id || (selected.id == 6 && item.id == 1)) {
-      item.data = "n";
-      rotate(item);
-    } else if (selected.id > item.id || (selected.id == 1 && item.id == 6)) {
-      item.data = "p";
-      rotate(item);
+    console.log(selected.id, item.id);
+    if (selected.id < item.id) {
+      if (selected.id == 1 && item.id == 6) {
+        item.data = "p";
+        rotate(item);
+      } else {
+        item.data = "n";
+        rotate(item);
+      }
+    } else if (selected.id > item.id) {
+      if (selected.id == 6 && item.id == 1) {
+        item.data = "n";
+        rotate(item);
+      } else {
+        item.data = "p";
+        rotate(item);
+      }
     }
     if (selected) {
       selected.classList.remove("selected");
@@ -215,20 +198,33 @@ items.forEach((item) => {
     selected = item;
     selected.classList.add("selected");
     cancion = canciones[parseInt(item.id) - 1];
-    canvasCtx.clearRect(0, 0, canvasKey.width, canvasKey.height);
-    source.stop(0);
-    window.cancelAnimationFrame(drawVisual);
-    playSong();
+    if (play_pause_button.classList.contains("fa-pause")) {
+      audioCtx.resume();
+      canvasCtx.clearRect(0, 0, canvasKey.width, canvasKey.height);
+      source.stop(0);
+
+      playSong();
+    }
 
     // Do something with the selected item
   });
 });
 
 function rotate(e) {
-  if (e.data == "n") {
+  if (e == "forward") {
+    if (i == 5) {
+      i = 0;
+    } else {
+      i++;
+    }
     currdeg = currdeg - 60;
   }
-  if (e.data == "p") {
+  if (e == "backward") {
+    if (i == 0) {
+      i = 5;
+    } else {
+      i--;
+    }
     currdeg = currdeg + 60;
   }
   const style1 =
@@ -261,6 +257,13 @@ function rotate(e) {
   carousel.style.cssText = style1;
 
   items.forEach((e) => (e.style.cssText = style2));
+  if (play_pause_button.classList.contains("fa-stop")) {
+    audioCtx.resume();
+    canvasCtx.clearRect(0, 0, canvasKey.width, canvasKey.height);
+    source.stop(0);
+
+    playSong();
+  }
 }
 
 function playSong2() {

@@ -1,4 +1,4 @@
-  
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap');
   :root {
     --casio-bgcolor: #171e27;
     --casio-color: #909eb4;
@@ -18,6 +18,7 @@
    --theStrokes: url('imagenes/theStrokes.png');
    --waltz: url('imagenes/waltz.jpg');
    --cupid: url('imagenes/cupid.jpg');
+    --font: url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 
   }
@@ -27,11 +28,12 @@
     display: flex;
     justify-content: center;
     margin-top: 3em;
+
   }
   
   .casio-pt1 {
     display: flex;
-    width: 900px;
+    width: 1200px;
     height: 450px;
     background: var(--casio-bgcolor);
     border-radius: 4px;
@@ -55,8 +57,8 @@
       8px 8px 4px #0005;
   }
   
-  .casio-pt1 .casio-left {
-      width: 200px;
+  .casio-left {
+      width: 600px;
       min-width: 200px;
       height: 100%;
       display: flex;
@@ -412,9 +414,11 @@
 
   
 .songSelector {
+  display: flex;
+  flex-direction: column;
   padding-top: 20px;
-  margin: auto;
-  width: 150px;
+  margin-bottom: 100%;
+  width: 80px;
   height: 100px;
   position: relative;
   perspective: 1000px;
@@ -436,78 +440,119 @@
   display: block;
   position: absolute;
   background: #000;
-  width: 150px;
+  width: 100px;
   height: 100px;
   text-align: center;
   color: #FFF;
-  opacity: 0.98;
+ 
   border-radius: 10px;
   transition: transform 1s;
   cursor:pointer;
 }
 
 .cancion1 {
-  transform: rotateY(0deg) translateZ(150px);
+  transform: rotateY(0deg) translateZ(100px);
 }
 .cancion1 .item {
   background: var(--theStrokes) no-repeat;
   background-size: cover;
 }
 .cancion2 {
-  transform: rotateY(60deg) translateZ(150px) rotateY(-60deg);
+  transform: rotateY(60deg) translateZ(100px) rotateY(-60deg);
 }
 .cancion2 .item {
   background: var(--algoContigo) no-repeat;
   background-size: cover;
 }
 .cancion3 {
-  transform: rotateY(120deg) translateZ(150px)  rotateY(-120deg);
+  transform: rotateY(120deg) translateZ(100px)  rotateY(-120deg);
 }
 .cancion3 .item {
   background: var(--aw) no-repeat;
   background-size: cover;
 }
 .cancion4 {
-  transform: rotateY(180deg) translateZ(150px) rotateY(-180deg);
+  transform: rotateY(180deg) translateZ(100px) rotateY(-180deg);
 }
 .cancion4 .item {
   background: var(--waltz) no-repeat;
   background-size: cover;
 }
 .cancion5 {
-  transform: rotateY(240deg) translateZ(150px) rotateY(-240deg);
+  transform: rotateY(240deg) translateZ(100px) rotateY(-240deg);
 } 
 .cancion5 .item {
   background: var(--gettingOlder) no-repeat;
   background-size: cover;
 }
 .cancion6 {
-  transform: rotateY(300deg) translateZ(150px) rotateY(-300deg);
+  transform: rotateY(300deg) translateZ(100px) rotateY(-300deg);
 } 
 .cancion6 .item {
   background: var(--cupid) no-repeat;
   background-size: cover;
 }
 
-.next, .prev {
-  color: #444;
-  position: absolute;
-  top: 80px;
-  padding: 1em 2em;
-  cursor: pointer;
-  background: #CCC;
-  border-radius: 5px;
-  border-top: 1px solid #FFF;
-  box-shadow: 0 5px 0 #999;
-  transition: box-shadow 0.1s, top 0.1s;
+.controles{
+  width: 50px;
+  height: 50px;
 }
-.next:hover, .prev:hover { color: #000; }
-.next:active, .prev:active {
-  top: 104px;
-  box-shadow: 0 1px 0 #999;
+
+.volume-control
+{
+    height: 5px;
+    width: 100px;
+    background: #555;
+    border-radius: 15px;
 }
-.next { right: 5em; }
-.prev { left: 5em; }
+.volume-control .ui-slider-range-min 
+{
+    height: 5px;
+    width: 100px;
+    background: #2ecc71;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+}
+.music-player-timeframe
+{
+    height: 8px;
+    width: 100%;
+    background: #555;
+    border-radius: 15px;
+}
+.music-player-timeframe .ui-slider-range-min 
+{
+    height: 8px;
+    width: 100%;
+    background: #2ecc71;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+}
+
+.bold
+{
+    font-weight: bolder;
+}
+.text-center
+{
+    text-align: center;
+}
+
+.music-player i
+{
+    margin: 10px;
+    font-size: large;
+}
+.music-player i:hover
+{
+    color: #2ecc71;
+    cursor: pointer;
+}
+
+
+
   
   
   
