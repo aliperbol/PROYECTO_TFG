@@ -13,35 +13,45 @@
     <div class="container">
       <div class="casio-pt1">
         <div class="casio-left">
-          <div>
-          <div class="songSelector">
-            <div class="carousel">
-              <div class="cancion1">
-                <div class="item selected" id="1" cancion="cancion1"></div>
+          <div class = "speaker-container">
+            <div class="songSelector">
+              <div class="carousel">
+                <div class="cancion1">
+                  <div class="item selected" id="1" cancion="cancion1"></div>
+                </div>
+                <div class="cancion2">
+                  <div class="item" id="2" cancion="cancion2"></div>
+                </div>
+                <div class="cancion3">
+                  <div class="item" id="3" cancion="cancion3"></div>
+                </div>
+                <div class="cancion4">
+                  <div class="item" id="4" cancion="cancion4"></div>
+                </div>
+                <div class="cancion5">
+                  <div class="item" id="5" cancion="cancion5"></div>
+                </div>
+                <div class="cancion6">
+                  <div class="item" id="6" cancion="cancion6"></div>
+                </div>
               </div>
-              <div class="cancion2">
-                <div class="item" id="2" cancion="cancion2"></div>
-              </div>
-              <div class="cancion3">
-                <div class="item" id="3" cancion="cancion3"></div>
-              </div>
-              <div class="cancion4">
-                <div class="item" id="4" cancion="cancion4"></div>
-              </div>
-              <div class="cancion5">
-                <div class="item" id="5" cancion="cancion5"></div>
-              </div>
-              <div class="cancion6">
-                <div class="item" id="6" cancion="cancion6"></div>
-              </div>
+              
+              
             </div>
-            
-          </div>
+           
           <div class="music-player">
+            <div class="nombre"></div>
+            <div class="time">
+              <div class="current">0:00</div>
+              <div class="divider">/</div>
+              <div class="length"></div>
               <input type = "range" value ="0" min="0" max="100" step="1"
                 id="music-player-timeframe"
                 class="music-player-timeframe"
               ></input>
+            </div>
+            
+              
               <div style="width: 100%; text-align: center">
                 <i class="fas fa-backward" onclick="rotate('backward')"></i>
                 <i
@@ -49,52 +59,130 @@
                   id="play-pause-button"
                   onclick="playPause()"
                 ></i>
+                <i
+                  class="fas fa-stop"
+                  id="play-pause-button"
+                  onclick="stop()"
+                ></i>
                 <i class="fas fa-forward" onclick="rotate('forward')"></i>
               </div>
-              <div style="margin-bottom: 15px">
-                <div style="float: right">
-                  <div id="volume" class="volume-control"></div>
-                </div>
+              <div class="filter">
+                Volume
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value="0.5"
+                  class="slider selector"
+                  id="volume-selector-slider"
+                />
               </div>
             </div>
+            <div class="filters">
+              <div class="biquadFilter">
+                <span class="title-custom">Biquad Filters</span>
+                <div class="filter">
+                  Lowpass
+                  <input
+                      type="range"
+                      min="0"
+                      max="8000"
+                      step="1"
+                      value="8000"
+                      class="slider selector"
+                      id="lowpass-selector-slider"
+                    />
+                </div>
+  
+                <div class="filter">
+                  Highpass
+                  <input
+                      type="range"
+                      min="0"
+                      max="8000"
+                      step="1"
+                      value="0"
+                      class="slider selector"
+                      id="highpass-selector-slider"
+                    />
+                </div>
+              </div>
+              <div class="pannerFilter">
+                <span class="title-custom">Panner Filters</span>
+                <div class="filter">
+                  Left
+                  <input
+                      type="range"
+                      min="-1"
+                      max="1"
+                      step="0.01"
+                      value="0"
+                      class="slider selector"
+                      id="panner-selector-slider"
+                    />
+  
+                    Right
+                </div>
+              </div>
+        
+              
+
+              
+              <div class="voiceSettings">
+                <label for="voice">Voice setting</label>
+                <select id="voice" name="voice" class="selectorInput">
+                  <option value="distortion">Distortion</option>
+                  <option value="convolver">Reverb</option>
+                  <option value="off" selected>Off</option>
+                </select>
+              </div>
             </div>
-            <div class="speaker-container">
-              <div class="speaker"></div>
-            </div>
+          </div>
+                
+            
+            <input type="file" id="input-file" accept="audio/*">
+
             <div class="speaker-bottom">
               <div class="power">
                 <button id="power"></button>
                 <span>power</span>
               </div>
             </div>
+            
           </div>
+          
           <div class="casio-right">
             <div class="visualizer">
               <canvas id="canvas" class="pantalla"></canvas>
-              <div id="controls">
-                <input
-                  type="button"
-                  class="boton"
-                  id="start_button"
-                  value="Start"
-                />
-                &nbsp; &nbsp;
-                <input
-                  type="button"
-                  class="boton"
-                  id="stop_button"
-                  value="Stop"
-                  disabled
-                />
-                <br /><br />
-                <output id="msg"></output>
-              </div>
-              <div>
-                <label for="visual">Visualizer setting</label>
-                <select id="visual" name="visual">
-                  <option value="sinewave" selected>Sinewave</option>
-                  <option value="frequencybars">Frequency bars</option>
-                </select>
+              
+                
+           
+              
+              <div class="visualizerSettings">
+                
+                <div class="visualizerType">
+                  <output id="msg"></output>
+                  <div>
+                    <label for="visual">Visualizer setting</label>
+                    <select id="visual" name="visual" class="selectorInput">
+                      <option value="sinewave" selected>Sinewave</option>
+                      <option value="frequencybars">Frequency bars</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="visualizerColor">
+                  <span class="title-custom">Customize visualizer</span>
+                  <div class="inputColor">
+                    <span> Frequency bar color</span>
+                 
+                    <input type="color" name="colorPicker" id="colorPickerBars" value="#FC9A60">
+                  </div>
+                  <div class="inputColor">
+                    <span> Sinewave color</span> <input type="color" name="colorPicker" id="colorPickerSine" value="#FFFFFF">
+                  </div>
+                 
+                  </div>
               </div>
             </div>
             <div class="casio-controls">
@@ -110,24 +198,13 @@
                 <div class="group">
                   <span>Pedal </span>
                 </div>
-
-                <input
-                  type="range"
-                  class="lowpass slider"
-                  id="lowpass-slider"
-                  min="0"
-                  max="8000"
-                  value="350"
-                />
-
-                <input
-                  type="range"
-                  class="lowpass slider"
-                  id="highpass-slider"
-                  min="0"
-                  max="8000"
-                  value="350"
-                />
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              
                 <div class="segmented-control">
                   <input
                     type="radio"
@@ -181,7 +258,7 @@
                     max="1"
                     step="0.01"
                     value="0.5"
-                    class="slider"
+                    class="slider Svolume"
                     id="volume-slider"
                   />
 
@@ -269,7 +346,7 @@
           </div>
         </div>
       </div>
-    </div>
+      
     <script
       src="https://kit.fontawesome.com/e6647c162b.js"
       crossorigin="anonymous"

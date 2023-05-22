@@ -1,36 +1,243 @@
 const msg = document.querySelector("output");
-const startBtn = document.querySelector("#start_button");
-const stopBtn = document.querySelector("#stop_button");
 const canvasKey = document.querySelector("#canvas");
 const visualSelector = document.querySelector("#visual");
 var play_pause_button = document.getElementById("play-pause-button");
+const length = document.querySelector(".length");
+const current = document.querySelector(".current");
+const volumeSelector = document.querySelector("#volume-selector-slider");
+const pannerSelector = document.querySelector("#panner-selector-slider");
+const lowpassSelector = document.querySelector("#lowpass-selector-slider");
+const highpassSelector = document.querySelector("#highpass-selector-slider");
+const nombre = document.querySelector(".nombre");
+const colorSine = document.getElementById("colorPickerSine");
+const colorBars = document.getElementById("colorPickerBars");
+const inputFile = document.getElementById("input-file");
+const voiceSelect = document.getElementById("voice");
+
 var song_length_in_seconds = 0;
 const cancion1 = "canciones/The Strokes - Reptilia.mp3";
-const cancion2 = "canciones/Algo contigo.mp3";
+const cancion2 = "canciones/Algo contigo - Rita Payés.mp3";
 const cancion3 = "canciones/Lana Del Rey - AW (Audio).mp3";
-const cancion4 = "canciones/Waltz No. 1, Op. 6 Collapse.mp3";
+const cancion4 = "canciones/Waltz No 1, Op 6 Collapse.mp3";
 const cancion5 =
   "canciones/Billie Eilish - Getting Older (TIME ABC Performance 2021).mp3";
-const cancion6 =
-  "canciones/FIFTY FIFTY (피프티피프티) - Cupid (TwinVer.) Official Lyric Video.mp3";
+const cancion6 = "canciones/Taylor Swift - Love Story (Taylors Version).mp3";
+
 let canciones = [cancion1, cancion2, cancion3, cancion4, cancion5, cancion6];
 let cancion = canciones[0];
+nombre.innerHTML = canciones[0].split("/")[1].split(".")[0];
 let i = 0;
+let interval;
+let offset;
 var audioCtx = new AudioContext();
+
 const canvasCtx = canvasKey.getContext("2d");
 const intendedWidth = document.querySelector(".visualizer").clientWidth;
 canvasKey.setAttribute("width", intendedWidth);
 let source;
+const sliderCurrentTime = document.getElementById("music-player-timeframe");
+
+const filterLow = audioCtx.createBiquadFilter();
+filterLow.type = "lowpass";
+
+const filterHigh = audioCtx.createBiquadFilter();
+filterHigh.type = "highpass";
+
+const analyserNode = audioCtx.createAnalyser();
+analyserNode.fftSize = 2048;
+const bufferLength = analyserNode.frequencyBinCount;
+WIDTH = canvasKey.width;
+HEIGHT = canvasKey.height;
+
+const distortion = audioCtx.createWaveShaper();
+const convolver = audioCtx.createConvolver();
+
+const panner = new StereoPannerNode(audioCtx, { pan: 0 });
+
+const amplitudeArray = new Uint8Array(bufferLength);
+
 function playPause() {
-  if (play_pause_button.classList.contains("fa-stop")) {
-    play_pause_button.classList.replace("fa-stop", "fa-play");
-    source.stop();
+  if (play_pause_button.classList.contains("fa-pause")) {
+    play_pause_button.classList.replace("fa-pause", "fa-play");
+    pause();
   } else if (play_pause_button.classList.contains("fa-play")) {
-    play_pause_button.classList.replace("fa-play", "fa-stop");
-    playSong();
+    play_pause_button.classList.replace("fa-play", "fa-pause");
+    if (paused === false) {
+      loadSong();
+    } else {
+      resume();
+    }
   }
 }
-function playSong() {
+
+let paused = false;
+let timePaused = 0;
+function pause() {
+  paused = true;
+  timePaused = sliderCurrentTime.value;
+  clearInterval(interval);
+  audioCtx.suspend();
+}
+function resume() {
+  audioCtx.resume();
+  paused = false;
+  interval = setInterval(() => {
+    const elapsedTime = audioCtx.currentTime - timePaused;
+
+    const minutes = Math.floor(elapsedTime / 60);
+    const seconds = Math.floor(elapsedTime % 60);
+    current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+    sliderCurrentTime.value = elapsedTime;
+  }, 100);
+}
+function stop() {
+  source.stop(0);
+  clearInterval(interval);
+  sliderCurrentTime.value = 0;
+  current.innerText = "0:00";
+  if (play_pause_button.classList.contains("fa-pause")) {
+    play_pause_button.classList.replace("fa-pause", "fa-play");
+  }
+  msg.textContent = "Audio stopped";
+
+  pausedAt = null;
+}
+function playSong(buffer) {
+  // create audio source
+  source = new AudioBufferSourceNode(audioCtx, {
+    buffer: buffer,
+    loop: false,
+  });
+
+  const gainNode = audioCtx.createGain();
+  // gainNode.gain.value = 0;
+  gainNode.gain.value = volumeSelector.value;
+  volumeSelector.addEventListener(
+    "input",
+    () => {
+      gainNode.gain.value = volumeSelector.value;
+    },
+    false
+  );
+
+  filterLow.frequency.value = lowpassSelector.value;
+  lowpassSelector.addEventListener(
+    "input",
+    () => {
+      filterLow.frequency.value = lowpassSelector.value;
+    },
+    false
+  );
+
+  filterHigh.frequency.value = highpassSelector.value;
+  highpassSelector.addEventListener(
+    "input",
+    () => {
+      filterHigh.frequency.value = highpassSelector.value;
+    },
+    false
+  );
+
+  pannerSelector.addEventListener(
+    "input",
+    () => {
+      panner.pan.value = pannerSelector.value;
+    },
+    false
+  );
+
+  source
+    .connect(gainNode)
+    .connect(panner)
+    .connect(filterLow)
+    .connect(filterHigh)
+    .connect(analyserNode)
+    .connect(audioCtx.destination);
+
+  source.start(0);
+
+  msg.textContent = "Playing audio...";
+  const startTime = audioCtx.currentTime;
+
+  const duration = source.buffer.duration;
+  const minutes = Math.floor(duration / 60);
+  const seconds = duration - minutes * 60;
+  const time = minutes + ":" + Math.round(seconds).toString().padStart(2, "0");
+  length.textContent = time;
+  sliderCurrentTime.setAttribute("max", duration);
+  interval = setInterval(() => {
+    const elapsedTime = audioCtx.currentTime - startTime;
+
+    const minutes = Math.floor(elapsedTime / 60);
+    const seconds = Math.floor(elapsedTime % 60);
+    current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    sliderCurrentTime.value = elapsedTime;
+  }, 100);
+  setTimeout(function () {
+    clearInterval(interval);
+  }, duration * 1000);
+  visualize();
+  //voiceChange();
+}
+let settingBefore = "";
+function voiceChange() {
+  distortion.oversample = "4x";
+
+  const songSetting = voiceSelect.value;
+  console.log(songSetting);
+
+  if (songSetting == "distortion") {
+    distortion.oversample = "2x";
+    distortion.curve = makeDistortionCurve(100);
+    settingBefore = "distortion";
+    filterHigh.connect(distortion).connect(analyserNode);
+  } else {
+    if (settingBefore == "distortion") {
+      filterHigh.disconnect(distortion);
+      filterHigh.connect(analyserNode);
+    }
+  }
+
+  // When convolver is selected it is connected back into the audio path
+  if (songSetting == "convolver") {
+    findSoundConvolver();
+    filterHigh.connect(convolver).connect(analyserNode);
+
+    settingBefore = "convolver";
+  } else {
+    if (settingBefore == "convolver") {
+      convolver.buffer = null;
+      filterHigh.disconnect(convolver);
+      filterHigh.connect(analyserNode);
+    }
+  }
+}
+let soundSource;
+function findSoundConvolver() {
+  var request = new XMLHttpRequest();
+
+  request.open("GET", "canciones/concert-crowd.mp3", true);
+  request.responseType = "arraybuffer";
+
+  request.onload = function () {
+    audioCtx.decodeAudioData(request.response, function (buffer) {
+      soundSource = audioCtx.createBufferSource();
+      convolver.buffer = buffer;
+    });
+  };
+  // request.onprogress = function () {
+  //   visualize();
+  // };
+
+  request.send();
+}
+
+voiceSelect.onchange = function () {
+  voiceChange();
+};
+
+function loadSong() {
   // load audio file
   msg.textContent = "Loading audio…";
   var request = new XMLHttpRequest();
@@ -40,26 +247,7 @@ function playSong() {
 
   request.onload = function () {
     audioCtx.decodeAudioData(request.response, function (buffer) {
-      // create audio source
-      source = new AudioBufferSourceNode(audioCtx, {
-        buffer: buffer,
-        loop: false,
-      });
-      const startTime = audioCtx.currentTime;
-      source.connect(audioCtx.destination);
-
-      // play audio
-      source.start(0);
-      msg.textContent = "Playing audio...";
-      const sliderCurrentTime = document.getElementById(
-        "music-player-timeframe"
-      );
-      setInterval(() => {
-        const elapsedTime = audioCtx.currentTime - startTime;
-
-        sliderCurrentTime.value = elapsedTime;
-      }, 100);
-      visualize(source);
+      playSong(buffer);
     });
   };
   // request.onprogress = function () {
@@ -68,36 +256,43 @@ function playSong() {
 
   request.send();
 }
-// When the _Start_ button is clicked, set up the audio nodes, play the sound,
-// gather samples for the analysis, update the canvas.
-startBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  startBtn.disabled = true;
-  stopBtn.disabled = false;
-  playSong();
-});
-//});
-stopBtn.addEventListener("click", (e) => {
-  e.preventDefault();
 
-  canvasCtx.clearRect(0, 0, canvasKey.width, canvasKey.height);
+// http://stackoverflow.com/questions/22312841/waveshaper-node-in-webaudio-how-to-emulate-distortion
+function makeDistortionCurve(amount) {
+  let k = typeof amount === "number" ? amount : 50,
+    n_samples = 44100,
+    curve = new Float32Array(n_samples),
+    deg = Math.PI / 180,
+    i = 0,
+    x;
+  for (; i < n_samples; ++i) {
+    x = (i * 2) / n_samples - 1;
+    curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+  }
+  return curve;
+}
 
-  startBtn.disabled = false;
-  stopBtn.disabled = true;
-  source.stop(0);
-  window.cancelAnimationFrame(drawVisual);
-  msg.textContent = "Audio stopped.";
-});
-const analyserNode = audioCtx.createAnalyser();
-analyserNode.fftSize = 2048;
-const bufferLength = analyserNode.frequencyBinCount;
-WIDTH = canvasKey.width;
-HEIGHT = canvasKey.height;
-const amplitudeArray = new Uint8Array(bufferLength);
+inputFile.addEventListener(
+  "change",
+  function () {
+    msg.textContent = "Loading audio…";
+    var file = inputFile.files[0];
 
-function visualize(source) {
-  source.connect(analyserNode);
-  analyserNode.connect(audioCtx.destination);
+    var reader = new FileReader();
+    reader.onload = function () {
+      var audioData = reader.result;
+
+      audioCtx.decodeAudioData(audioData, function (buffer) {
+        playSong(buffer);
+      });
+    };
+    play_pause_button.classList.replace("fa-play", "fa-pause");
+    reader.readAsArrayBuffer(file);
+  },
+  false
+);
+
+function visualize() {
   const visualSetting = visualSelector.value;
 
   if (audioCtx.state === "running") {
@@ -116,8 +311,9 @@ function visualize(source) {
         let x = 0;
         for (let i = 0; i < amplitudeArray.length; i++) {
           const value = amplitudeArray[i] / 256;
-          const y = canvasKey.height - canvasKey.height * value;
-          canvasCtx.fillStyle = "white";
+          const y = HEIGHT - HEIGHT * value;
+          canvasCtx.fillStyle = colorSine.value;
+
           canvasCtx.fillRect(i, y, 1, 1);
         }
       }
@@ -141,7 +337,7 @@ function visualize(source) {
         for (let i = 0; i < bufferLength; i++) {
           barHeight = dataArrayAlt[i];
 
-          canvasCtx.fillStyle = "rgb(" + (barHeight + 100) + ",50,50)";
+          canvasCtx.fillStyle = colorBars.value;
           canvasCtx.fillRect(
             x,
             HEIGHT - barHeight / 2,
@@ -171,59 +367,33 @@ const items = document.querySelectorAll(".item");
 
 var currdeg = 0;
 
-let selected = document.querySelector(".selected");
-items.forEach((item) => {
-  item.addEventListener("click", () => {
-    console.log(selected.id, item.id);
-    if (selected.id < item.id) {
-      if (selected.id == 1 && item.id == 6) {
-        item.data = "p";
-        rotate(item);
-      } else {
-        item.data = "n";
-        rotate(item);
-      }
-    } else if (selected.id > item.id) {
-      if (selected.id == 6 && item.id == 1) {
-        item.data = "n";
-        rotate(item);
-      } else {
-        item.data = "p";
-        rotate(item);
-      }
-    }
-    if (selected) {
-      selected.classList.remove("selected");
-    }
-    selected = item;
-    selected.classList.add("selected");
-    cancion = canciones[parseInt(item.id) - 1];
-    if (play_pause_button.classList.contains("fa-pause")) {
-      audioCtx.resume();
-      canvasCtx.clearRect(0, 0, canvasKey.width, canvasKey.height);
-      source.stop(0);
-
-      playSong();
-    }
-
-    // Do something with the selected item
-  });
-});
-
+function changeSelect(i) {
+  let selected = document.querySelector(".selected");
+  selected.classList.remove("selected");
+  document.getElementById(i + 1).classList.add("selected");
+}
 function rotate(e) {
   if (e == "forward") {
     if (i == 5) {
       i = 0;
+      nombre.innerHTML = canciones[i].split("/")[1].split(".")[0];
+      changeSelect(i);
     } else {
       i++;
+      nombre.innerHTML = canciones[i].split("/")[1].split(".")[0];
+      changeSelect(i);
     }
     currdeg = currdeg - 60;
   }
   if (e == "backward") {
     if (i == 0) {
       i = 5;
+      nombre.innerHTML = canciones[i].split("/")[1].split(".")[0];
+      changeSelect(i);
     } else {
       i--;
+      nombre.innerHTML = canciones[i].split("/")[1].split(".")[0];
+      changeSelect(i);
     }
     currdeg = currdeg + 60;
   }
@@ -257,55 +427,12 @@ function rotate(e) {
   carousel.style.cssText = style1;
 
   items.forEach((e) => (e.style.cssText = style2));
-  if (play_pause_button.classList.contains("fa-stop")) {
+  if (play_pause_button.classList.contains("fa-pause")) {
     audioCtx.resume();
     canvasCtx.clearRect(0, 0, canvasKey.width, canvasKey.height);
     source.stop(0);
-
-    playSong();
+    clearInterval(interval);
+    sliderCurrentTime.value = 0;
+    loadSong();
   }
 }
-
-function playSong2() {
-  // A user interaction happened we can create the audioContext
-  const audioContext = new AudioContext();
-
-  const canvasCtx = canvasKey.getContext("2d");
-  const intendedWidth = document.querySelector(".visualizer").clientWidth;
-  canvasKey.setAttribute("width", intendedWidth);
-
-  // Load the audio the first time through, otherwise play it from the buffer
-  msg.textContent = "Loading audio…";
-
-  fetch("canciones/The Strokes - Reptilia.mp3")
-    .then((response) => response.arrayBuffer())
-    .then((downloadedBuffer) => audioContext.decodeAudioData(downloadedBuffer))
-    .then((decodedBuffer) => {
-      msg.textContent = "Configuring audio stack…";
-
-      // Set up the AudioBufferSourceNode
-      const sourceNode = new AudioBufferSourceNode(audioContext, {
-        buffer: decodedBuffer,
-        loop: true,
-      });
-
-      // Set up the audio analyser and the javascript node
-      const analyserNode = new AnalyserNode(audioContext);
-      const javascriptNode = audioContext.createScriptProcessor(1024, 1, 1);
-
-      // Connect the nodes together
-
-      sourceNode.connect(audioContext.destination);
-      sourceNode.connect(analyserNode);
-      analyserNode.connect(javascriptNode);
-      javascriptNode.connect(audioContext.destination);
-
-      // Play the audio
-      msg.textContent = "Audio playing…";
-      sourceNode.start(0); // Play the sound now
-      javascriptNode.onaudioprocess = () => {
-        visualize();
-      };
-    });
-}
-//Set up the event handler to stop playing the audio
