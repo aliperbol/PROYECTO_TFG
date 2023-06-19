@@ -41,7 +41,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 3em;
+    margin-top: 1em;
 
   }
   
@@ -49,14 +49,14 @@
     margin:0 auto;
     display: flex;
     width: 1200px;
-    height:500px;
+    height:700px;
     background: var(--casio-bgcolor);
     border-radius: 4px;
     
     font-weight: 400;
-    font-size: 11px;
+    font-size: 14px;
     color: var(--casio-color);
-    padding: 8px 5px 5px 5px;
+    padding: 5px 5px 5px 5px;
     box-shadow:
       0 2px 1px #fffc inset,
       1px 1px 0 #0001,
@@ -71,6 +71,7 @@
       8px 8px 0 var(--casio-bgcolor),
       8px 8px 4px #0005;
   }
+
 
   .visualizerSettings{
     display: grid;
@@ -137,7 +138,7 @@
       }
   
   .casio-pt1 .casio-left .speaker-bottom .power {
-          width: 60px;
+          width: 90px;
           height: 90%;
           display: flex;
           flex-direction: column;
@@ -148,8 +149,8 @@
   
   .casio-pt1 .casio-left .speaker-bottom #power {
               background: #fdafaf;
-              width: 12px;
-              height: 12px;
+              width: 20px;
+              height: 20px;
               
             }
 
@@ -159,6 +160,7 @@
       display: flex;
       flex-direction: column;
       position: relative;
+      justify-content: space-evenly;
       bottom: 0;
       width: 100%;
       height: 100%;
@@ -166,7 +168,7 @@
     }
   
   .casio-pt1 .casio-right .casio-controls {
-        min-height: 90px;
+        min-height: 150px;
         border-top: 2px solid var(--casio-color);
       }
   
@@ -174,7 +176,7 @@
           display: flex;
           align-items: flex-end;
           justify-content: space-between  ;
-          font-size: 9px;
+          font-size: 12px;
         }
   
   .casio-pt1 .casio-right .casio-controls .controls-label .group {
@@ -182,26 +184,9 @@
             flex-direction: column;
             align-items: center;
           }
-  
-  .casio-pt1 .casio-right .casio-controls .controls-label .group.buttons .semi.box {
-                border-bottom: 0;
-                border-radius: 2px 2px 0 0;
-                padding: 2px 3px;
-                position: absolute;
-                height: 10px;
-                transform: translate(-28px, -2px);
-              }
-  
 
   
-  .casio-pt1 .casio-right .casio-controls .controls-label .group .box {
-              display: inline-block;
-              border: 1px solid var(--casio-color);
-              border-radius: 2px;
-              padding: 0 10px;
-              font-size: 10px;
-              margin: 4px;
-            }
+
 
   
   .casio-pt1 .casio-right .casio-controls .controls-label .group .options > span {
@@ -360,6 +345,7 @@
   .casio-pt1 .casio-right .keys-container .keys .white-keys {
             display: flex;
             height: 100%;
+            
           }
   
   .casio-pt1 .casio-right .keys-container .keys .white-keys .white.key {
@@ -395,9 +381,6 @@
                 box-shadow: 0 0 2px #0004;
               }
   
-  .casio-pt1 .casio-right .keys-container .keys .white-keys .white.key:active::after, .casio-pt1 .casio-right .keys-container .keys .white-keys .white.key.active::after {
-                  transform: translate(-2px, -2px);
-                }
   
   .casio-pt1 .casio-right .keys-container .note-keys {
           width: 100%;
@@ -421,7 +404,7 @@
        /* SEGMENTED-CONTROL */
  .segmented-control {
   margin-top: 3px;
-  width: 12rem;
+
   height: 3rem;
   box-shadow: 0.1rem 0.1rem 0.2rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var( --casio-bgcolor);
   border-radius: 1rem;
@@ -452,7 +435,7 @@
 .segmented-control__color {
   position: absolute;
   height: 1rem;
-  width: 3rem;
+  width: 4rem;
   border-radius: 0.8rem;
   box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--casio-bgcolor);
   pointer-events: none;
@@ -462,15 +445,15 @@
   transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 #tab-2:checked ~ .segmented-control__color {
-  transform: translateX(3rem);
+  transform: translateX(4rem);
   transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 #tab-3:checked ~ .segmented-control__color {
-  transform: translateX(6rem);
+  transform: translateX(8rem);
   transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 #tab-4:checked ~ .segmented-control__color {
-  transform: translateX(9rem);
+  transform: translateX(12rem);
   transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -569,10 +552,14 @@
 .music-player{
   margin: 0 auto;
   height: 20%;
+  width: 100%;
   padding-bottom: 7px;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
 }
+
 .volume-control
 {
     height: 5px;
@@ -640,20 +627,59 @@
   border-top: 2px solid var(--casio-color);
   padding-top: 10px;
   display: grid;
+  
 }
 .biquadFilter{
   grid-row: 1;
   grid-column: 1;
 }
+.biquadFilter div{
+  margin-bottom: 10px;
+}
 .pannerFilter{
   grid-row: 1;
   grid-column: 2;
+}
+
+.pannerFilter div{
+  margin-bottom: 10px;
 }
 .voiceSettings{
   margin: 0 auto;
   grid-row: 2;
   grid-column: 1 / 3;
 }
+.input-file {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+}
+.label-input{
+  display: block;
+  position: relative;
+  width: 200px;    
+  height: 20px;
+  border-radius: 25px;
+  background-color: var(--bg);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-visual);
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform .2s ease-out;
+}
+
+.file-name {
+  position: absolute;
+  bottom: -35px;
+  left: 10px;
+  font-size: 0.85rem;
+  color: var(--casio-color);
+}
+
 
 
 

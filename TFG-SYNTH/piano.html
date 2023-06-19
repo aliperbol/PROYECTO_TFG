@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Mi proyecto</title>
 
-    <link rel="stylesheet" href="stylePiano.css" />
+    <link rel="stylesheet" href="style.css" />
 
     <!--  -->
   </head>
@@ -38,7 +38,7 @@
               
               
             </div>
-           
+          <audio id="cancion" src="canciones/The Strokes - Reptilia.mp3"></audio>
           <div class="music-player">
             <div class="nombre"></div>
             <div class="time">
@@ -62,7 +62,7 @@
                 <i
                   class="fas fa-stop"
                   id="play-pause-button"
-                  onclick="stop()"
+                  onclick="stopPrueba()"
                 ></i>
                 <i class="fas fa-forward" onclick="rotate('forward')"></i>
               </div>
@@ -81,7 +81,8 @@
             </div>
             <div class="filters">
               <div class="biquadFilter">
-                <span class="title-custom">Biquad Filters</span>
+                <div>                <span class="title-custom">Biquad Filters</span>
+                </div>
                 <div class="filter">
                   Lowpass
                   <input
@@ -109,7 +110,8 @@
                 </div>
               </div>
               <div class="pannerFilter">
-                <span class="title-custom">Panner Filters</span>
+                <div>                <span class="title-custom">Panner Filters</span>
+                </div>
                 <div class="filter">
                   Left
                   <input
@@ -140,8 +142,13 @@
             </div>
           </div>
                 
-            
-            <input type="file" id="input-file" accept="audio/*">
+            <div>
+              
+              <input type="file" class = "input-file" id="input-file" accept="audio/*">
+              <label for="input-file" class="label-input">Select audio file
+                <p class="file-name" id="file-name"></p>
+              </label>
+            </div>
 
             <div class="speaker-bottom">
               <div class="power">
@@ -185,6 +192,7 @@
                   </div>
               </div>
             </div>
+            <div class="control-and-keys">
             <div class="casio-controls">
               <div class="controls-label">
                 <div class="group">
@@ -198,6 +206,8 @@
                 <div class="group">
                   <span>Pedal </span>
                 </div>
+                <div></div>
+                <div></div>
                 <div></div>
                 <div></div>
                 <div></div>
@@ -344,6 +354,7 @@
               </div>
             </div>
           </div>
+          </div>
         </div>
       </div>
       
@@ -351,7 +362,7 @@
       src="https://kit.fontawesome.com/e6647c162b.js"
       crossorigin="anonymous"
     ></script>
-    <script src="mainPiano.js"></script>
-    <script src="visualizer.js"></script>
+    <script src="mainSynth.js"></script>
+    <script src="visualizer&Player.js"></script>
   </body>
 </html>

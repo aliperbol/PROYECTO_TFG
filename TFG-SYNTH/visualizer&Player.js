@@ -13,7 +13,7 @@ const colorSine = document.getElementById("colorPickerSine");
 const colorBars = document.getElementById("colorPickerBars");
 const inputFile = document.getElementById("input-file");
 const voiceSelect = document.getElementById("voice");
-
+let inputPlaying = false;
 var song_length_in_seconds = 0;
 const cancion1 = "canciones/The Strokes - Reptilia.mp3";
 const cancion2 = "canciones/Algo contigo - Rita Payés.mp3";
@@ -22,7 +22,9 @@ const cancion4 = "canciones/Waltz No 1, Op 6 Collapse.mp3";
 const cancion5 =
   "canciones/Billie Eilish - Getting Older (TIME ABC Performance 2021).mp3";
 const cancion6 = "canciones/Taylor Swift - Love Story (Taylors Version).mp3";
+const file = document.getElementById("file-name");
 
+let audioElement = document.getElementById("cancion");
 let canciones = [cancion1, cancion2, cancion3, cancion4, cancion5, cancion6];
 let cancion = canciones[0];
 nombre.innerHTML = canciones[0].split("/")[1].split(".")[0];
@@ -30,7 +32,7 @@ let i = 0;
 let interval;
 let offset;
 var audioCtx = new AudioContext();
-
+let sourceNode;
 const canvasCtx = canvasKey.getContext("2d");
 const intendedWidth = document.querySelector(".visualizer").clientWidth;
 canvasKey.setAttribute("width", intendedWidth);
@@ -59,16 +61,33 @@ const amplitudeArray = new Uint8Array(bufferLength);
 function playPause() {
   if (play_pause_button.classList.contains("fa-pause")) {
     play_pause_button.classList.replace("fa-pause", "fa-play");
-    pause();
+    audioElement.pause();
+    cancelAnimationFrame(animationFrameId);
+    paused = true;
   } else if (play_pause_button.classList.contains("fa-play")) {
     play_pause_button.classList.replace("fa-play", "fa-pause");
+    updateCurrentTime();
     if (paused === false) {
-      loadSong();
+      playSongPrueba();
     } else {
-      resume();
+      audioElement.play();
     }
   }
 }
+
+// function playPause() {
+//   if (play_pause_button.classList.contains("fa-pause")) {
+//     play_pause_button.classList.replace("fa-pause", "fa-play");
+//     pause();
+//   } else if (play_pause_button.classList.contains("fa-play")) {
+//     play_pause_button.classList.replace("fa-play", "fa-pause");
+//     if (paused === false) {
+//       loadSong();
+//     } else {
+//       resume();
+//     }
+//   }
+// }
 
 let paused = false;
 let timePaused = 0;
@@ -91,8 +110,33 @@ function resume() {
     sliderCurrentTime.value = elapsedTime;
   }, 100);
 }
+function stopPrueba() {
+  if (inputPlaying) {
+    source.stop(0);
+  }
+  current.innerText = "0:00";
+
+  audioElement.pause();
+  audioElement.currentTime = 0;
+  audioElement.parentNode.removeChild(audioElement);
+
+  // Crea un nuevo elemento de audio
+  audioElement = document.createElement("audio");
+  audioElement.id = "audio";
+  audioElement.src = canciones[i];
+
+  // Agrega el nuevo elemento de audio al DOM
+  document.body.appendChild(audioElement);
+  if (play_pause_button.classList.contains("fa-pause")) {
+    play_pause_button.classList.replace("fa-pause", "fa-play");
+  }
+  msg.textContent = "Audio stopped";
+  sliderCurrentTime.value = 0.0;
+  pausedAt = null;
+  console.log(sliderCurrentTime.value);
+}
 function stop() {
-  source.stop(0);
+  audioElement.stop();
   clearInterval(interval);
   sliderCurrentTime.value = 0;
   current.innerText = "0:00";
@@ -158,25 +202,25 @@ function playSong(buffer) {
   source.start(0);
 
   msg.textContent = "Playing audio...";
-  const startTime = audioCtx.currentTime;
+  // const startTime = audioCtx.currentTime;
 
-  const duration = source.buffer.duration;
-  const minutes = Math.floor(duration / 60);
-  const seconds = duration - minutes * 60;
-  const time = minutes + ":" + Math.round(seconds).toString().padStart(2, "0");
-  length.textContent = time;
-  sliderCurrentTime.setAttribute("max", duration);
-  interval = setInterval(() => {
-    const elapsedTime = audioCtx.currentTime - startTime;
+  // const duration = source.buffer.duration;
+  // const minutes = Math.floor(duration / 60);
+  // const seconds = duration - minutes * 60;
+  // const time = minutes + ":" + Math.round(seconds).toString().padStart(2, "0");
+  // length.textContent = time;
+  // sliderCurrentTime.setAttribute("max", duration);
+  // interval = setInterval(() => {
+  //   const elapsedTime = audioCtx.currentTime - startTime;
 
-    const minutes = Math.floor(elapsedTime / 60);
-    const seconds = Math.floor(elapsedTime % 60);
-    current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-    sliderCurrentTime.value = elapsedTime;
-  }, 100);
-  setTimeout(function () {
-    clearInterval(interval);
-  }, duration * 1000);
+  //   const minutes = Math.floor(elapsedTime / 60);
+  //   const seconds = Math.floor(elapsedTime % 60);
+  //   current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  //   sliderCurrentTime.value = elapsedTime;
+  // }, 100);
+  // setTimeout(function () {
+  //   clearInterval(interval);
+  // }, duration * 1000);
   visualize();
   //voiceChange();
 }
@@ -275,9 +319,11 @@ function makeDistortionCurve(amount) {
 inputFile.addEventListener(
   "change",
   function () {
+    inputPlaying = true;
     msg.textContent = "Loading audio…";
     var file = inputFile.files[0];
-
+    audioElement.pause();
+    audioElement.currentTime = 0;
     var reader = new FileReader();
     reader.onload = function () {
       var audioData = reader.result;
@@ -425,14 +471,146 @@ function rotate(e) {
     -currdeg +
     `deg);`;
   carousel.style.cssText = style1;
+  console.log(sliderCurrentTime.value);
 
   items.forEach((e) => (e.style.cssText = style2));
   if (play_pause_button.classList.contains("fa-pause")) {
-    audioCtx.resume();
+    audioElement.pause();
+    audioElement.currentTime = 0;
+    // Elimina el elemento de audio existente
+    audioElement.parentNode.removeChild(audioElement);
+
+    // Crea un nuevo elemento de audio
+    audioElement = document.createElement("audio");
+    audioElement.id = "audio";
+    audioElement.src = canciones[i];
+
+    // Agrega el nuevo elemento de audio al DOM
+    document.body.appendChild(audioElement);
+    sourceNode.disconnect();
     canvasCtx.clearRect(0, 0, canvasKey.width, canvasKey.height);
-    source.stop(0);
-    clearInterval(interval);
     sliderCurrentTime.value = 0;
-    loadSong();
+    playSongPrueba();
+    audioElement.addEventListener("timeupdate", () => {
+      const currentTime = audioElement.currentTime;
+      const duration = audioElement.duration;
+      const progress = (currentTime / duration) * 100;
+      sliderCurrentTime.value = progress.toFixed(1);
+      console.log(sliderCurrentTime.value);
+    });
+  } else {
+    audioElement.parentNode.removeChild(audioElement);
+
+    // Crea un nuevo elemento de audio
+    audioElement = document.createElement("audio");
+    audioElement.id = "audio";
+    audioElement.src = canciones[i];
+    document.body.appendChild(audioElement);
+
+    audioElement.addEventListener("loadedmetadata", () => {
+      changeDuration();
+    });
   }
 }
+
+function playSongPrueba() {
+  sourceNode = audioCtx.createMediaElementSource(audioElement);
+  const gainNode = audioCtx.createGain();
+  // gainNode.gain.value = 0;
+  gainNode.gain.value = volumeSelector.value;
+  volumeSelector.addEventListener(
+    "input",
+    () => {
+      gainNode.gain.value = volumeSelector.value;
+    },
+    false
+  );
+
+  filterLow.frequency.value = lowpassSelector.value;
+  lowpassSelector.addEventListener(
+    "input",
+    () => {
+      filterLow.frequency.value = lowpassSelector.value;
+    },
+    false
+  );
+
+  filterHigh.frequency.value = highpassSelector.value;
+  highpassSelector.addEventListener(
+    "input",
+    () => {
+      filterHigh.frequency.value = highpassSelector.value;
+    },
+    false
+  );
+
+  pannerSelector.addEventListener(
+    "input",
+    () => {
+      panner.pan.value = pannerSelector.value;
+    },
+    false
+  );
+
+  sourceNode
+    .connect(gainNode)
+    .connect(panner)
+    .connect(filterLow)
+    .connect(filterHigh)
+    .connect(analyserNode)
+    .connect(audioCtx.destination);
+  audioElement.addEventListener("loadedmetadata", function () {
+    changeDuration();
+  });
+  audioElement.play();
+
+  msg.textContent = "Playing audio...";
+  visualize();
+  //voiceChange();
+}
+
+let animationFrameId;
+
+function updateCurrentTime() {
+  const currentTime = audioElement.currentTime;
+  animationFrameId = requestAnimationFrame(updateCurrentTime);
+  const minutes = Math.floor(currentTime / 60);
+  const seconds = Math.floor(currentTime % 60);
+  current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+audioElement.addEventListener("durationchange", () => {
+  changeDuration();
+});
+audioElement.addEventListener("timeupdate", () => {
+  const currentTime = audioElement.currentTime;
+  const duration = audioElement.duration;
+  const progress = (currentTime / duration) * 100;
+  sliderCurrentTime.value = progress.toFixed(1);
+});
+
+sliderCurrentTime.addEventListener("input", () => {
+  const progress = sliderCurrentTime.value;
+  const duration = audioElement.duration;
+  const currentTime = (progress / 100) * duration;
+  audioElement.currentTime = currentTime;
+});
+
+function changeDuration() {
+  const duration = audioElement.duration;
+  console.log(audioElement.duration);
+  console.log(audioElement);
+  const minutes = Math.floor(duration / 60);
+  const seconds = duration - minutes * 60;
+  const time = minutes + ":" + Math.round(seconds).toString().padStart(2, "0");
+  length.textContent = time;
+}
+
+file.addEventListener("change", () => {
+  const fileName = file.files[0].name;
+  console.log(fileName);
+  // Convert size in bytes to kilo bytes
+
+  // Set the text content
+
+  document.querySelector(".file-name").textContent = fileName;
+});

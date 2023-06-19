@@ -1,42 +1,33 @@
-//En este caso voy a dejar solo un color, quizas el clarito para no meter cosas innecesarias
-//import Soundfont from "https://cdn.skypack.dev/soundfont-player";
-
-//Ahora voy a probar a ponerle a las notas el sonido a ver si me sale
-//Importando esto podemos obtener el sonido de distintos instrumentos
-
-//Selectores
+//Variables
 const pedal = document.querySelector("#pedal");
 const power = document.querySelector("#power");
 const volumeSlider = document.querySelector("#volume-slider");
 
+//Volumen del osciladores
 let volumenActual = 0.5;
 volumeSlider.addEventListener("input", () => {
   volumenActual = volumeSlider.value;
 });
 
+//Pedal
 pedal.addEventListener("click", () => {
   if (pedal.classList.contains("selected")) {
     pedal.classList.remove("selected");
     pedal.style.boxShadow = "1px 1px 2px #0006, 1px 0 0 #fff5 inset";
-    // button is already selected
   } else {
-    // button is not selected yet
     pedal.style.boxShadow = "0 0 3px #0005 inset";
     pedal.classList.add("selected");
   }
 });
 
+//Botón encendido
 power.addEventListener("click", () => {
   if (power.classList.contains("selected")) {
     power.classList.remove("selected");
 
     power.style.background = "#fdafaf";
     power.style.boxShadow = "none";
-
-    // button is already selected
   } else {
-    // button is not selected yet
-
     power.style.background = "#f90606";
     power.style.boxShadow = "0 0 20px #ff0000";
 
@@ -44,6 +35,7 @@ power.addEventListener("click", () => {
   }
 });
 
+//Generadores de sonido de las notas
 const playingNotes = {};
 const teclas = document.querySelectorAll(".key");
 
@@ -95,6 +87,8 @@ function ___generaSonido(frecuencia, tecla) {
 
   //creamos un nodo para controlar el volumen
   const gainNode = ac.createGain();
+
+  //obtenemos el tipo de oscilador
   const oscType = document.querySelector(
     'input[name="osc_type"]:checked'
   ).value;
@@ -102,19 +96,15 @@ function ___generaSonido(frecuencia, tecla) {
   const pianoOscillator = ac.createOscillator();
   pianoOscillator.type = oscType;
   pianoOscillator.frequency.value = frecuencia;
-  //lowpass filter
-  // const filterLow = ac.createBiquadFilter();
-  // filterLow.frequency.value = freqLow;
-
-  //highpass filter
 
   pianoOscillator.connect(gainNode);
-  // gainNode.connect(filterLow);
   gainNode.connect(ac.destination);
 
   pianoOscillator.start(now);
 
   gainNode.gain.setValueAtTime(volumenActual, now);
+
+  //disminuimos el volumen conforme pasa el tiempo
   gainNode.gain.exponentialRampToValueAtTime(0.001, now + 3);
   pianoOscillator.stop(now + 4);
 
