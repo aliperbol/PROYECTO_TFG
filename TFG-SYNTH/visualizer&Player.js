@@ -1,7 +1,7 @@
+//variables
 const msg = document.querySelector("output");
 const canvasKey = document.querySelector("#canvas");
 const visualSelector = document.querySelector("#visual");
-var play_pause_button = document.getElementById("play-pause-button");
 const length = document.querySelector(".length");
 const current = document.querySelector(".current");
 const volumeSelector = document.querySelector("#volume-selector-slider");
@@ -9,12 +9,20 @@ const pannerSelector = document.querySelector("#panner-selector-slider");
 const lowpassSelector = document.querySelector("#lowpass-selector-slider");
 const highpassSelector = document.querySelector("#highpass-selector-slider");
 const nombre = document.querySelector(".nombre");
+
+const sliderCurrentTime = document.getElementById("music-player-timeframe");
 const colorSine = document.getElementById("colorPickerSine");
 const colorBars = document.getElementById("colorPickerBars");
 const inputFile = document.getElementById("input-file");
 const voiceSelect = document.getElementById("voice");
+const file = document.getElementById("file-name");
+let audioElement = document.getElementById("cancion");
+var play_pause_button = document.getElementById("play-pause-button");
+
 let inputPlaying = false;
 var song_length_in_seconds = 0;
+
+//Canciones
 const cancion1 = "canciones/The Strokes - Reptilia.mp3";
 const cancion2 = "canciones/Algo contigo - Rita Payés.mp3";
 const cancion3 = "canciones/Lana Del Rey - AW (Audio).mp3";
@@ -22,22 +30,21 @@ const cancion4 = "canciones/Waltz No 1, Op 6 Collapse.mp3";
 const cancion5 =
   "canciones/Billie Eilish - Getting Older (TIME ABC Performance 2021).mp3";
 const cancion6 = "canciones/Taylor Swift - Love Story (Taylors Version).mp3";
-const file = document.getElementById("file-name");
-
-let audioElement = document.getElementById("cancion");
 let canciones = [cancion1, cancion2, cancion3, cancion4, cancion5, cancion6];
 let cancion = canciones[0];
 nombre.innerHTML = canciones[0].split("/")[1].split(".")[0];
+
 let i = 0;
 let interval;
-let offset;
+let paused = false;
+
+//Nodos
 var audioCtx = new AudioContext();
 let sourceNode;
 const canvasCtx = canvasKey.getContext("2d");
 const intendedWidth = document.querySelector(".visualizer").clientWidth;
 canvasKey.setAttribute("width", intendedWidth);
 let source;
-const sliderCurrentTime = document.getElementById("music-player-timeframe");
 
 const filterLow = audioCtx.createBiquadFilter();
 filterLow.type = "lowpass";
@@ -46,7 +53,7 @@ const filterHigh = audioCtx.createBiquadFilter();
 filterHigh.type = "highpass";
 
 const analyserNode = audioCtx.createAnalyser();
-analyserNode.fftSize = 2048;
+
 const bufferLength = analyserNode.frequencyBinCount;
 WIDTH = canvasKey.width;
 HEIGHT = canvasKey.height;
@@ -55,8 +62,6 @@ const distortion = audioCtx.createWaveShaper();
 const convolver = audioCtx.createConvolver();
 
 const panner = new StereoPannerNode(audioCtx, { pan: 0 });
-
-const amplitudeArray = new Uint8Array(bufferLength);
 
 function playPause() {
   if (play_pause_button.classList.contains("fa-pause")) {
@@ -75,22 +80,6 @@ function playPause() {
   }
 }
 
-// function playPause() {
-//   if (play_pause_button.classList.contains("fa-pause")) {
-//     play_pause_button.classList.replace("fa-pause", "fa-play");
-//     pause();
-//   } else if (play_pause_button.classList.contains("fa-play")) {
-//     play_pause_button.classList.replace("fa-play", "fa-pause");
-//     if (paused === false) {
-//       loadSong();
-//     } else {
-//       resume();
-//     }
-//   }
-// }
-
-let paused = false;
-let timePaused = 0;
 function pause() {
   paused = true;
   timePaused = sliderCurrentTime.value;
@@ -113,7 +102,12 @@ function resume() {
 function stopPrueba() {
   if (inputPlaying) {
     source.stop(0);
+    sliderCurrentTime.innerText = 0;
+    clearInterval(interval);
+    changeDuration();
   }
+  sliderCurrentTime.value = 0;
+
   current.innerText = "0:00";
 
   audioElement.pause();
@@ -131,7 +125,7 @@ function stopPrueba() {
     play_pause_button.classList.replace("fa-pause", "fa-play");
   }
   msg.textContent = "Audio stopped";
-  sliderCurrentTime.value = 0.0;
+  sliderCurrentTime.value = 0;
   pausedAt = null;
   console.log(sliderCurrentTime.value);
 }
@@ -147,7 +141,7 @@ function stop() {
 
   pausedAt = null;
 }
-function playSong(buffer) {
+function playSongBuffer(buffer) {
   // create audio source
   source = new AudioBufferSourceNode(audioCtx, {
     buffer: buffer,
@@ -155,7 +149,7 @@ function playSong(buffer) {
   });
 
   const gainNode = audioCtx.createGain();
-  // gainNode.gain.value = 0;
+
   gainNode.gain.value = volumeSelector.value;
   volumeSelector.addEventListener(
     "input",
@@ -202,49 +196,54 @@ function playSong(buffer) {
   source.start(0);
 
   msg.textContent = "Playing audio...";
-  // const startTime = audioCtx.currentTime;
-
-  // const duration = source.buffer.duration;
-  // const minutes = Math.floor(duration / 60);
-  // const seconds = duration - minutes * 60;
-  // const time = minutes + ":" + Math.round(seconds).toString().padStart(2, "0");
-  // length.textContent = time;
-  // sliderCurrentTime.setAttribute("max", duration);
-  // interval = setInterval(() => {
-  //   const elapsedTime = audioCtx.currentTime - startTime;
-
-  //   const minutes = Math.floor(elapsedTime / 60);
-  //   const seconds = Math.floor(elapsedTime % 60);
-  //   current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  //   sliderCurrentTime.value = elapsedTime;
-  // }, 100);
-  // setTimeout(function () {
-  //   clearInterval(interval);
-  // }, duration * 1000);
+  updateTimeBuffer();
   visualize();
-  //voiceChange();
+}
+
+function updateTimeBuffer() {
+  const startTime = audioCtx.currentTime;
+
+  const duration = source.buffer.duration;
+  const minutes = Math.floor(duration / 60);
+  const seconds = duration - minutes * 60;
+  const time = minutes + ":" + Math.round(seconds).toString().padStart(2, "0");
+  length.textContent = time;
+  sliderCurrentTime.setAttribute("max", duration);
+  interval = setInterval(() => {
+    const elapsedTime = audioCtx.currentTime - startTime;
+
+    const minutes = Math.floor(elapsedTime / 60);
+    const seconds = Math.floor(elapsedTime % 60);
+    current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    sliderCurrentTime.value = elapsedTime;
+  }, 100);
+  setTimeout(function () {
+    clearInterval(interval);
+  }, duration * 1000);
 }
 let settingBefore = "";
 function voiceChange() {
-  distortion.oversample = "4x";
-
   const songSetting = voiceSelect.value;
   console.log(songSetting);
 
   if (songSetting == "distortion") {
+    if (settingBefore == "convolver") {
+      convolver.buffer = null;
+      filterHigh.disconnect(convolver);
+      filterHigh.connect(analyserNode);
+    }
     distortion.oversample = "2x";
     distortion.curve = makeDistortionCurve(100);
     settingBefore = "distortion";
     filterHigh.connect(distortion).connect(analyserNode);
-  } else {
+  }
+
+  // When convolver is selected it is connected back into the audio path
+  else if (songSetting == "convolver") {
     if (settingBefore == "distortion") {
       filterHigh.disconnect(distortion);
       filterHigh.connect(analyserNode);
     }
-  }
-
-  // When convolver is selected it is connected back into the audio path
-  if (songSetting == "convolver") {
     findSoundConvolver();
     filterHigh.connect(convolver).connect(analyserNode);
 
@@ -255,9 +254,15 @@ function voiceChange() {
       filterHigh.disconnect(convolver);
       filterHigh.connect(analyserNode);
     }
+
+    if (settingBefore == "distortion") {
+      filterHigh.disconnect(distortion);
+      filterHigh.connect(analyserNode);
+    }
+    settingBefore == null;
   }
 }
-let soundSource;
+
 function findSoundConvolver() {
   var request = new XMLHttpRequest();
 
@@ -266,13 +271,9 @@ function findSoundConvolver() {
 
   request.onload = function () {
     audioCtx.decodeAudioData(request.response, function (buffer) {
-      soundSource = audioCtx.createBufferSource();
       convolver.buffer = buffer;
     });
   };
-  // request.onprogress = function () {
-  //   visualize();
-  // };
 
   request.send();
 }
@@ -283,7 +284,7 @@ voiceSelect.onchange = function () {
 
 function loadSong() {
   // load audio file
-  msg.textContent = "Loading audio…";
+  msg.textContent = "Loading audio...";
   var request = new XMLHttpRequest();
 
   request.open("GET", canciones[i], true);
@@ -291,17 +292,13 @@ function loadSong() {
 
   request.onload = function () {
     audioCtx.decodeAudioData(request.response, function (buffer) {
-      playSong(buffer);
+      playSongBuffer(buffer);
     });
   };
-  // request.onprogress = function () {
-  //   visualize();
-  // };
 
   request.send();
 }
 
-// http://stackoverflow.com/questions/22312841/waveshaper-node-in-webaudio-how-to-emulate-distortion
 function makeDistortionCurve(amount) {
   let k = typeof amount === "number" ? amount : 50,
     n_samples = 44100,
@@ -319,6 +316,12 @@ function makeDistortionCurve(amount) {
 inputFile.addEventListener(
   "change",
   function () {
+    if (inputPlaying) {
+      source.stop(0);
+      sliderCurrentTime.innerText = 0;
+      currentTime = 0;
+      clearInterval(interval);
+    }
     inputPlaying = true;
     msg.textContent = "Loading audio…";
     var file = inputFile.files[0];
@@ -329,8 +332,12 @@ inputFile.addEventListener(
       var audioData = reader.result;
 
       audioCtx.decodeAudioData(audioData, function (buffer) {
-        playSong(buffer);
+        playSongBuffer(buffer);
       });
+      const fileName = inputFile.files[0].name.split(".")[0];
+      // Set the text content
+
+      document.querySelector(".file-name").innerText = fileName;
     };
     play_pause_button.classList.replace("fa-play", "fa-pause");
     reader.readAsArrayBuffer(file);
@@ -340,17 +347,14 @@ inputFile.addEventListener(
 
 function visualize() {
   const visualSetting = visualSelector.value;
-
+  analyserNode.fftSize = 2048;
   if (audioCtx.state === "running") {
     if (visualSetting === "sinewave") {
-      // We can use Float32Array instead of Uint8Array if we want higher precision
-      // const dataArray = new Float32Array(bufferLength);
       function draw() {
         requestAnimationFrame(draw);
-        const frequencyArray = new Float32Array(bufferLength);
+        const amplitudeArray = new Uint8Array(bufferLength);
         // Get the frequency data from the AnalyserNode
         analyserNode.getByteTimeDomainData(amplitudeArray);
-        analyserNode.getFloatFrequencyData(frequencyArray);
         // Clear the canvas
         canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
@@ -367,11 +371,9 @@ function visualize() {
       draw();
     } else if (visualSetting === "frequencybars") {
       const dataArrayAlt = new Uint8Array(bufferLength);
-      const frequencyArray = new Float32Array(bufferLength);
       canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
       function draw() {
         analyserNode.getByteFrequencyData(dataArrayAlt);
-        analyserNode.getFloatFrequencyData(frequencyArray);
 
         canvasCtx.fillStyle = "rgb(0, 0, 0)";
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -405,7 +407,7 @@ function visualize() {
 visualSelector.onchange = function () {
   canvasCtx.reset();
 
-  visualize(source);
+  visualize();
 };
 
 const carousel = document.querySelector(".carousel");
@@ -471,7 +473,6 @@ function rotate(e) {
     -currdeg +
     `deg);`;
   carousel.style.cssText = style1;
-  console.log(sliderCurrentTime.value);
 
   items.forEach((e) => (e.style.cssText = style2));
   if (play_pause_button.classList.contains("fa-pause")) {
@@ -491,13 +492,6 @@ function rotate(e) {
     canvasCtx.clearRect(0, 0, canvasKey.width, canvasKey.height);
     sliderCurrentTime.value = 0;
     playSongPrueba();
-    audioElement.addEventListener("timeupdate", () => {
-      const currentTime = audioElement.currentTime;
-      const duration = audioElement.duration;
-      const progress = (currentTime / duration) * 100;
-      sliderCurrentTime.value = progress.toFixed(1);
-      console.log(sliderCurrentTime.value);
-    });
   } else {
     audioElement.parentNode.removeChild(audioElement);
 
@@ -514,9 +508,10 @@ function rotate(e) {
 }
 
 function playSongPrueba() {
+  msg.textContent = "Loading audio…";
   sourceNode = audioCtx.createMediaElementSource(audioElement);
   const gainNode = audioCtx.createGain();
-  // gainNode.gain.value = 0;
+
   gainNode.gain.value = volumeSelector.value;
   volumeSelector.addEventListener(
     "input",
@@ -559,6 +554,7 @@ function playSongPrueba() {
     .connect(filterHigh)
     .connect(analyserNode)
     .connect(audioCtx.destination);
+
   audioElement.addEventListener("loadedmetadata", function () {
     changeDuration();
   });
@@ -577,15 +573,14 @@ function updateCurrentTime() {
   const minutes = Math.floor(currentTime / 60);
   const seconds = Math.floor(currentTime % 60);
   current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  const duration = audioElement.duration;
+  const progress = (currentTime / duration) * 100;
+  if (!isNaN(progress)) {
+    sliderCurrentTime.value = progress.toFixed(1);
+  }
 }
 audioElement.addEventListener("durationchange", () => {
   changeDuration();
-});
-audioElement.addEventListener("timeupdate", () => {
-  const currentTime = audioElement.currentTime;
-  const duration = audioElement.duration;
-  const progress = (currentTime / duration) * 100;
-  sliderCurrentTime.value = progress.toFixed(1);
 });
 
 sliderCurrentTime.addEventListener("input", () => {
@@ -597,20 +592,20 @@ sliderCurrentTime.addEventListener("input", () => {
 
 function changeDuration() {
   const duration = audioElement.duration;
-  console.log(audioElement.duration);
-  console.log(audioElement);
   const minutes = Math.floor(duration / 60);
   const seconds = duration - minutes * 60;
   const time = minutes + ":" + Math.round(seconds).toString().padStart(2, "0");
   length.textContent = time;
 }
-
-file.addEventListener("change", () => {
-  const fileName = file.files[0].name;
-  console.log(fileName);
-  // Convert size in bytes to kilo bytes
-
-  // Set the text content
-
-  document.querySelector(".file-name").textContent = fileName;
-});
+function updateCurrentTimeBuffer() {
+  const currentTime = audioCtx.currentTime;
+  animationFrameId = requestAnimationFrame(updateCurrentTime);
+  const minutes = Math.floor(currentTime / 60);
+  const seconds = Math.floor(currentTime % 60);
+  current.innerText = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  const duration = source.buffer.duration;
+  const progress = (currentTime / duration) * 100;
+  if (!isNaN(progress)) {
+    sliderCurrentTime.value = progress.toFixed(1);
+  }
+}

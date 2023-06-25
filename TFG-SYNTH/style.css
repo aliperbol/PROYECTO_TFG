@@ -28,8 +28,7 @@
 
   }
   body{
-    
-    
+
     background-image: var(--fondo);
     background-repeat: no-repeat;
     background-size: cover;
@@ -205,7 +204,6 @@
 
               .slider {
                 appearance: none;
-             
                 height: 5px;
                 background: #ddd;
                 outline: none;
@@ -376,9 +374,13 @@
   .casio-pt1 .casio-right .keys-container .keys .white-keys .white.key:active,
               .casio-pt1 .casio-right .keys-container .keys .white-keys .white.key.active {
                 transform: translate(2px, 0);
-                z-index: 2;
+                z-index: 1;
                 border-top: 2px solid #fff;
                 box-shadow: 0 0 2px #0004;
+              }
+                .casio-pt1 .casio-right .keys-container .keys .white-keys .white.key:active,
+              .casio-pt1 .casio-right .keys-container .keys .white-keys .white.key.active::after {
+           
               }
   
   
@@ -680,17 +682,7 @@
   color: var(--casio-color);
 }
 
-
-
-
-
-
-
-
-  
-  
-  
-
- 
-  
-  
+.input-song{
+  display: flex;
+  flex-direction: column;
+}
