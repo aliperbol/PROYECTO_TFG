@@ -67,6 +67,7 @@ function playPause() {
   if (play_pause_button.classList.contains("fa-pause")) {
     play_pause_button.classList.replace("fa-pause", "fa-play");
     audioElement.pause();
+    msg.textContent = "Audio paused.";
     cancelAnimationFrame(animationFrameId);
     paused = true;
   } else if (play_pause_button.classList.contains("fa-play")) {
@@ -75,6 +76,7 @@ function playPause() {
     if (paused === false) {
       playSongPrueba();
     } else {
+      msg.textContent = "Playing audio...";
       audioElement.play();
     }
   }
