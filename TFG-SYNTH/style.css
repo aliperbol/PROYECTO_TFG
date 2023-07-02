@@ -658,7 +658,8 @@
   position: absolute;
 }
 .label-input{
-  display: block;
+  display: flex;
+  flex-direction: row;
   position: relative;
   width: 200px;    
   height: 20px;
@@ -675,14 +676,15 @@
 }
 
 .file-name {
-  position: absolute;
-  bottom: -35px;
-  left: 10px;
+  border-radius: 25px;
+  font-weight: bold;
   font-size: 0.85rem;
-  color: var(--casio-color);
+  color: var(--casio-color); 
+  max-width: 600px;
 }
 
 .input-song{
+  align-items: center;
   display: flex;
   flex-direction: column;
 }
